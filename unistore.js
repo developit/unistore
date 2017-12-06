@@ -1,5 +1,10 @@
 import { h, Component } from 'preact';
 export { default as Provider } from 'preact-context-provider';
+function assign(obj, props) {
+	for (let i in props) obj[i] = props[i];
+	return obj;
+}
+
 
 /** Creates a new store, which is a tiny evented state container.
  *  @example
