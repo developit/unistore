@@ -1,6 +1,6 @@
 # unistore
 
-A tiny store + connect implementation for [Preact].
+A tiny (~750b) store + connect implementation for [Preact].
 
 ### Usage
 
