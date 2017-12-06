@@ -18,7 +18,7 @@
 
 -   [Install](#install)
 -   [Usage](#usage)
--   [Examples & Demos](#examples--demos)
+-   [Examples](#examples)
 -   [API](#api)
 -   [License](#license)
 
@@ -94,6 +94,10 @@ export default () => (
 	</Provider>
 )
 ```
+
+### Examples
+
+[README Example on CodeSandbox](https://codesandbox.io/s/l7y7w5qkz9)
 
 ### API
 
