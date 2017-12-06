@@ -1,6 +1,52 @@
+<p align="center">
+  <img src="https://i.imgur.com/o0u6dto.png" width="300" height="300" alt="unistore">
+  <br>
+  <a href="https://www.npmjs.org/package/unistore"><img src="https://img.shields.io/npm/v/unistore.svg?style=flat" alt="npm"></a> <a href="https://travis-ci.org/developit/unistore"><img src="https://travis-ci.org/developit/unistore.svg?branch=master" alt="travis"></a>
+</p>
+
 # unistore
 
-A tiny (~700b) store + connect implementation for [Preact].
+> A tiny ~700b centralized state container with component bindings for [Preact].
+
+-   **Small** footprint compliments Preact nicely
+-   **Familiar** names and ideas from Redux-like libraries
+-   **Useful** data selectors to extract properties from state
+-   **Portable** actions can be moved into a common place and imported
+-   **Functional** actions are just reducers
+
+## Table of Contents
+
+-   [Install](#install)
+-   [Usage](#usage)
+-   [Examples & Demos](#examples--demos)
+-   [API](#api)
+-   [License](#license)
+
+## Install
+
+This project uses [node](http://nodejs.org) and [npm](https://npmjs.com). Go check them out if you don't have them locally installed.
+
+```sh
+npm install --save unistore
+```
+
+Then with a module bundler like [webpack](https://webpack.js.org) or [rollup](http://rollupjs.org), use as you would anything else:
+
+```javascript
+// using ES6 modules
+import { createStore, Provider, connect } from 'unistore'
+
+// using CommonJS modules
+const unistore = require('unistore')
+```
+
+The [UMD](https://github.com/umdjs/umd) build is also available on [unpkg](https://unpkg.com):
+
+```html
+<script src="//unpkg.com/unistore/dist/unistore.umd.js"></script>
+```
+
+You can find the library on `window.unistore`.
 
 ### Usage
 
@@ -64,6 +110,43 @@ let store = createStore();
    store.setState({ c: 'd' });   // logs { c: 'd' }
 ```
 
+Returns **[store](#store)** 
+
+#### store
+
+An observable state container, returned from [createStore](#createstore)
+
+##### setState
+
+Apply a partial state object to the current state, invoking registered listeners.
+
+**Parameters**
+
+-   `update` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** An object with properties to be merged into state
+-   `overwrite` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** If `true`, update will replace state instead of being merged into it (optional, default `false`)
+
+##### subscribe
+
+Register a listener function to be called whenever state is changed.
+
+**Parameters**
+
+-   `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+
+##### unsubscribe
+
+Remove a previously-registered listener function.
+
+**Parameters**
+
+-   `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+
+##### getState
+
+Retreive the current state object.
+
+Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** state
+
 #### connect
 
 Wire a component up to the store. Passes state as props, re-renders on change.
@@ -79,8 +162,27 @@ Wire a component up to the store. Passes state as props, re-renders on change.
 const Foo = connect('foo,bar')( ({ foo, bar }) => <div /> )
 ```
 
+Returns **Component** ConnectedComponent
+
+#### Provider
+
+**Extends Component**
+
+Provider exposes a store (passed as `props.store`) into context.
+ Generally, an entire application is wrapped in a single `<Provider>` at the root.
+
+**Parameters**
+
+-   `props` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+    -   `props.store` **Store** A {Store} instance to expose via context.
+
+### Reporting Issues
+
+Found a problem? Want a new feature? First of all see if your issue or idea has [already been reported](../../issues).
+If don't, just open a [new clear and descriptive issue](../../issues/new).
+
 ### License
 
-MIT
+[MIT License](LICENSE.md) © [Jason Miller](https://jasonformat.com/)
 
 [preact]: https://github.com/developit/preact

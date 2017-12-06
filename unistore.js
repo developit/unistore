@@ -7,6 +7,8 @@ function assign(obj, props) {
 
 
 /** Creates a new store, which is a tiny evented state container.
+ *  @name createStore
+ *  @returns {store}
  *  @example
  *    let store = createStore();
  *    store.subscribe( state => console.log(state) );
@@ -16,20 +18,39 @@ function assign(obj, props) {
 export function createStore(state={}) {
 	let listeners = [];
 
-	return {
+	/** An observable state container, returned from {@link createStore}
+	 *  @name store
+	 */
+
+	return /** @lends store */ {
+
+		/** Apply a partial state object to the current state, invoking registered listeners.
+		 *  @param {Object} update				An object with properties to be merged into state
+		 *  @param {Boolean} [overwrite=false]	If `true`, update will replace state instead of being merged into it
+		 */
 		setState(update, overwrite) {
-			state = overwrite ? update : { ...state, ...update };
-			for (let i=0; i<listeners.length; i++) {
-				listeners[i](state);
-			}
+			state = overwrite ? update : assign(assign({}, state), update);
+			for (let i=0; i<listeners.length; i++) listeners[i](state);
 		},
-		subscribe(f) {
-			listeners.push(f);
+
+		/** Register a listener function to be called whenever state is changed.
+		 *  @param {Function} listener
+		 */
+		subscribe(listener) {
+			listeners.push(listener);
 		},
-		unsubscribe(f) {
-			let i = listeners.indexOf(f);
+
+		/** Remove a previously-registered listener function.
+		 *  @param {Function} listener
+		 */
+		unsubscribe(listener) {
+			let i = listeners.indexOf(listener);
 			listeners.splice(i, !!~i);
 		},
+
+		/** Retreive the current state object.
+		 *  @returns {Object} state
+		 */
 		getState() {
 			return state;
 		}
@@ -40,6 +61,7 @@ export function createStore(state={}) {
 /** Wire a component up to the store. Passes state as props, re-renders on change.
  *  @param {Function|Array|String} mapStateToProps  A function mapping of store state to prop values, or an array/CSV of properties to map.
  *  @param {Function|Object} [actions] 				Action functions (pure state mappings), or a factory returning them.
+ *  @returns {Component} ConnectedComponent
  *  @example
  *    const Foo = connect('foo,bar')( ({ foo, bar }) => <div /> )
  *  @example
@@ -48,30 +70,27 @@ export function createStore(state={}) {
  */
 export function connect(mapStateToProps, actions) {
 	if (typeof mapStateToProps!=='function') mapStateToProps = select(mapStateToProps || []);
-	return Child => (
-		class Wrapper extends Component {
-			constructor(props, { store }) {
-				super();
-				this.state.s = mapStateToProps(store ? store.getState() : {}, props);
-				this.actions = actions ? mapActions(actions, store) : { store };
-				this.update = () => {
-					let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
-					if (!shallowEqual(mapped, this.state.s)) {
-						this.setState({ s: mapped });
-					}
-				};
-			}
-			componentDidMount() {
-				this.context.store.subscribe(this.update);
-			}
-			componentWillUnmount() {
-				this.context.store.unsubscribe(this.update);
-			}
-			render(props, state) {
-				return <Child {...this.actions} {...props} {...state.s} />;
-			}
+	return Child => {
+		function Wrapper(props, { store }) {
+			let state = mapStateToProps(store ? store.getState() : {}, props);
+			let boundActions = actions ? mapActions(actions, store) : { store };
+			let update = () => {
+				let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
+				if (!shallowEqual(mapped, state)) {
+					state = mapped;
+					this.setState(null);
+				}
+			};
+			this.componentDidMount = () => {
+				store.subscribe(update);
+			};
+			this.componentWillUnmount = () => {
+				store.unsubscribe(update);
+			};
+			this.render = props => h(Child, assign(assign(assign({}, boundActions), props), state));
 		}
-	);
+		return (Wrapper.prototype = new Component()).constructor = Wrapper;
+	};
 }
 
 

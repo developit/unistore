@@ -85,9 +85,13 @@ describe('createStore()', () => {
 describe('<Provider>', () => {
 	it('should provide props into context', () => {
 		const Child = jest.fn();
-		let obj = { name: 'obj' };
-		render(<Provider a="a" obj={obj}><Child /></Provider>, document.body);
-		expect(Child).toHaveBeenCalledWith(expect.anything(), { a: 'a', obj });
+
+		render(<Provider store="a"><Child /></Provider>, document.body);
+		expect(Child).toHaveBeenCalledWith(expect.anything(), { store: 'a' });
+
+		let store = { name: 'obj' };
+		render(<Provider store={store}><Child /></Provider>, document.body);
+		expect(Child).toHaveBeenCalledWith(expect.anything(), { store });
 	});
 });
 
