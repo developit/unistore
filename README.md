@@ -65,7 +65,13 @@ let actions = store => ({
 	// The above example as an Arrow Function:
 	increment2: ({ count }) => ({ count: count+1 }),
 
-	// Async actions are actions that call store.setState():
+	// Async actions can be pure async/promise functions:
+	async getStuff(state) {
+		let res = await fetch('/foo.json');
+		return { stuff: await res.json() }
+	},
+
+	// ... or just actions that call store.setState() later:
 	incrementAsync(state) {
 		setTimeout( () => {
 			store.setState({ count: state.count+1 })
