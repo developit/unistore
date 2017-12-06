@@ -10,8 +10,7 @@
     "build": "npm run transpile && npm run size",
     "transpile": "rollup -c --environment FORMAT:umd && rollup -c --environment FORMAT:cjs && rollup -c --environment FORMAT:es",
     "size": "strip-json-comments --no-whitespace dist/unistore.js | gzip-size",
-    "test": "eslint unistore.js && jest",
-    "prepublish": "npm run build && cp \"*unistore.md\" README.md"
+    "test": "eslint unistore.js && jest"
   },
   "eslintConfig": {
     "extends": "eslint-config-synacor",
