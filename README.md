@@ -67,7 +67,7 @@ let actions = store => ({
 
 	// Async actions can be pure async/promise functions:
 	async getStuff(state) {
-		let res = await fetch('/foo.json');
+		let res = await fetch('/foo.json')
 		return { stuff: await res.json() }
 	},
 
