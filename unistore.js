@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-
+export { default as Provider } from 'preact-context-provider';
 
 /** Creates a new store, which is a tiny evented state container.
  *  @example
@@ -12,8 +12,8 @@ export function createStore(state={}) {
 	let listeners = [];
 
 	return {
-		setState(update) {
-			state = { ...state, ...update };
+		setState(update, overwrite) {
+			state = overwrite ? update : { ...state, ...update };
 			listeners.forEach( f => { f(state); });
 		},
 		subscribe(f) {
@@ -30,43 +30,27 @@ export function createStore(state={}) {
 }
 
 
-/** Provides its props into the tree as context.
- *  @example
- *    let store = createStore();
- *    <Provider store={store}><App /></Provider>
- */
-export class Provider extends Component {
-	getChildContext() {
-		let context = { ...this.props };
-		delete context.children;
-		return context;
-	}
-	render({ children }) {
-		return children[0];
-	}
-}
-
-
 /** Wire a component up to the store. Passes state as props, re-renders on change.
- *  @param {Function|Array|String} mapStateToProps  A function (or any `select()` argument) mapping of store state to prop values.
+ *  @param {Function|Array|String} mapStateToProps  A function mapping of store state to prop values, or an array/CSV of properties to map.
+ *  @param {Function|Object} [actions] 				Action functions (pure state mappings), or a factory returning them.
  *  @example
  *    const Foo = connect('foo,bar')( ({ foo, bar }) => <div /> )
  *  @example
  *    @connect( state => ({ foo: state.foo, bar: state.bar }) )
  *    export class Foo { render({ foo, bar }) { } }
  */
-export function connect(mapToProps, actions) {
-	if (typeof mapToProps!=='function') mapToProps = select(mapToProps);
+export function connect(mapStateToProps, actions) {
+	if (typeof mapToProps!=='function') mapStateToProps = select(mapStateToProps);
 	return Child => (
 		class Wrapper extends Component {
 			constructor(props, { store }) {
 				super();
-				this.state = mapToProps(store ? store.getState() : {}, props);
-				this.actions = actions ? actions(store) : { store };
+				this.state.s = mapStateToProps(store ? store.getState() : {}, props);
+				this.actions = actions ? mapActions(actions, store) : { store };
 				this.update = () => {
-					let mapped = mapToProps(store ? store.getState() : {}, this.props);
-					if (!shallowEqual(mapped, this.state)) {
-						this.setState(mapped);
+					let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
+					if (!shallowEqual(mapped, this.state.s)) {
+						this.setState({ s: mapped });
 					}
 				};
 			}
@@ -77,15 +61,29 @@ export function connect(mapToProps, actions) {
 				this.context.store.unsubscribe(this.update);
 			}
 			render(props, state) {
-				return <Child {...this.actions} {...props} {...state} />;
+				return <Child {...this.actions} {...props} {...state.s} />;
 			}
 		}
 	);
 }
 
 
-/** select('foo,bar') creates a function of the form: ({ foo, bar }) => ({ foo, bar }) */
+function mapActions(actions, store) {
+	let mapped = {};
+	if (typeof actions==='function') actions = actions(store);
+	for (let i in actions) {
+		mapped[i] = (...args) => {
+			let ret = actions[i](store.getState(), ...args);
+			if (ret!=null) store.setState(ret);
+		};
+	}
+	return mapped;
+}
+
+
+// select('foo,bar') creates a function of the form: ({ foo, bar }) => ({ foo, bar })
 export function select(properties) {
+	if (properties==null) return empty;
 	if (typeof properties==='string') properties = properties.split(',');
 	return state => {
 		let selected = {};
@@ -97,17 +95,10 @@ export function select(properties) {
 }
 
 
-// eslint-disable-next-line
-function assign(obj) {
-	for (let i=1; i<arguments.length; i++) {
-		let props = arguments[i];
-		for (let j in props) obj[j] = props[j];
-	}
-	return obj;
-}
+const empty = () => ({});
 
 
-/** Returns a boolean indicating if all keys and values match between two objects. */
+// Returns a boolean indicating if all keys and values match between two objects.
 function shallowEqual(a, b) {
 	for (let i in a) if (a[i]!==b[i]) return false;
 	for (let i in b) if (!(i in a)) return false;
