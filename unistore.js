@@ -14,7 +14,9 @@ export function createStore(state={}) {
 	return {
 		setState(update, overwrite) {
 			state = overwrite ? update : { ...state, ...update };
-			listeners.forEach( f => { f(state); });
+			for (let i=0; i<listeners.length; i++) {
+				listeners[i](state);
+			}
 		},
 		subscribe(f) {
 			listeners.push(f);
@@ -40,7 +42,7 @@ export function createStore(state={}) {
  *    export class Foo { render({ foo, bar }) { } }
  */
 export function connect(mapStateToProps, actions) {
-	if (typeof mapToProps!=='function') mapStateToProps = select(mapStateToProps);
+	if (typeof mapStateToProps!=='function') mapStateToProps = select(mapStateToProps || []);
 	return Child => (
 		class Wrapper extends Component {
 			constructor(props, { store }) {
@@ -82,8 +84,7 @@ function mapActions(actions, store) {
 
 
 // select('foo,bar') creates a function of the form: ({ foo, bar }) => ({ foo, bar })
-export function select(properties) {
-	if (properties==null) return empty;
+function select(properties) {
 	if (typeof properties==='string') properties = properties.split(',');
 	return state => {
 		let selected = {};
@@ -93,9 +94,6 @@ export function select(properties) {
 		return selected;
 	};
 }
-
-
-const empty = () => ({});
 
 
 // Returns a boolean indicating if all keys and values match between two objects.
