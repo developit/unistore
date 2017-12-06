@@ -1,6 +1,6 @@
 {
   "name": "unistore",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Dead simple centralized state container (store) with preact bindings.",
   "source": "unistore.js",
   "module": "dist/unistore.es.js",
