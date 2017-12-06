@@ -27,7 +27,7 @@ let actions = store => ({
 	}
 })
 
-const App = connect('counter', actions)(
+const App = connect('count', actions)(
 	({ count, increment }) => (
 		<div>
 			<p>Count: {count}</p>
