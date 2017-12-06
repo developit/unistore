@@ -116,7 +116,10 @@ function mapActions(actions, store) {
 	for (let i in actions) {
 		mapped[i] = (...args) => {
 			let ret = actions[i](store.getState(), ...args);
-			if (ret!=null) store.setState(ret);
+			if (ret!=null) {
+				if (ret.then) ret.then(store.setState);
+				else store.setState(ret);
+			}
 		};
 	}
 	return mapped;
