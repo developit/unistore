@@ -11,7 +11,8 @@
     "transpile": "rollup -c --environment FORMAT:umd && rollup -c --environment FORMAT:cjs && rollup -c --environment FORMAT:es",
     "size": "strip-json-comments --no-whitespace dist/unistore.js | gzip-size",
     "docs": "documentation readme unistore.js -q --section API",
-    "test": "eslint unistore.js && jest"
+    "test": "eslint unistore.js && jest",
+    "prepublishOnly": "npm run build"
   },
   "eslintConfig": {
     "extends": "eslint-config-synacor",
