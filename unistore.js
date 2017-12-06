@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-export { default as Provider } from 'preact-context-provider';
+
 function assign(obj, props) {
 	for (let i in props) obj[i] = props[i];
 	return obj;
@@ -73,6 +73,22 @@ export function connect(mapStateToProps, actions) {
 		}
 	);
 }
+
+
+/** Provider exposes a store (passed as `props.store`) into context.
+ *  Generally, an entire application is wrapped in a single `<Provider>` at the root.
+ *  @constructor
+ *  @extends Component
+ *  @param {Object} props
+ *  @param {Store} props.store		A {Store} instance to expose via context.
+ */
+export function Provider(){}
+Provider.prototype.getChildContext = function() {
+	return { store: this.props.store };
+};
+Provider.prototype.render = function(props) {
+	return props.children[0];
+};
 
 
 function mapActions(actions, store) {

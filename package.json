@@ -72,7 +72,5 @@
   "peerDependencies": {
     "preact": "*"
   },
-  "dependencies": {
-    "preact-context-provider": "^1.0.0"
-  }
+  "dependencies": {}
 }
