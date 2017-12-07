@@ -60,7 +60,7 @@
     "documentation": "^4.0.0",
     "eslint": "^4.12.1",
     "eslint-config-synacor": "^2.0.2",
-    "gzip-size": "^3.0.0",
+    "gzip-size-cli": "^2.1.0",
     "jest": "^21.2.1",
     "preact": "^8.2.6",
     "rollup": "^0.52.1",
@@ -73,6 +73,5 @@
   },
   "peerDependencies": {
     "preact": "*"
-  },
-  "dependencies": {}
+  }
 }
