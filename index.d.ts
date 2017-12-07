@@ -6,12 +6,13 @@ declare module "unistore" {
   import * as Preact from "preact";
 
   export type Listener<K> = (state: K) => void;
-
+  export type Middleware<K> = (state: K) => K;
   export interface Store<K> {
     setState(update: object, overwrite: boolean): void;
     subscribe(f: Listener<K>): void;
     unsubscribe(f: Listener<K>): void;
     getState(): K;
+    addMiddleware(f: Middleware): K;
   }
 
   export function createStore<K>(state: K): Store<K>;
