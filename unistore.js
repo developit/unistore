@@ -126,13 +126,15 @@ function mapActions(actions, store) {
 
 // Bind a single action to the store and sequester its return value.
 function createAction(store, action) {
-	let args = [store.getState()];
-	for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
-	let ret = action.apply(store, args);
-	if (ret!=null) {
-		if (ret.then) ret.then(store.setState);
-		else store.setState(ret);
-	}
+	return function() {
+		let args = [store.getState()];
+		for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
+		let ret = action.apply(store, args);
+		if (ret!=null) {
+			if (ret.then) ret.then(store.setState);
+			else store.setState(ret);
+		}
+	};
 }
 
 
