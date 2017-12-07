@@ -30,11 +30,13 @@ export function createStore(state) {
 			for (let i=0; i<listeners.length; i++) listeners[i](state);
 		},
 
-		/** Register a listener function to be called whenever state is changed.
+		/** Register a listener function to be called whenever state is changed, and returns the unsubscribe for that listener.
 		 *  @param {Function} listener
+		 *  @return {Function} unsubscribe
 		 */
 		subscribe(listener) {
 			listeners.push(listener);
+			return () => this.unsubscribe(listener);
 		},
 
 		/** Remove a previously-registered listener function.
@@ -80,11 +82,12 @@ export function connect(mapStateToProps, actions) {
 					this.setState(null);
 				}
 			};
+			let unsub;
 			this.componentDidMount = () => {
-				store.subscribe(update);
+				unsub = store.subscribe(update);
 			};
 			this.componentWillUnmount = () => {
-				store.unsubscribe(update);
+				unsub();
 			};
 			this.render = props => h(Child, assign(assign(assign({}, boundActions), props), state));
 		}

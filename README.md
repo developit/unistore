@@ -6,7 +6,7 @@
 
 # unistore
 
-> A tiny 650b centralized state container with component bindings for [Preact].
+> A tiny 680b centralized state container with component bindings for [Preact].
 
 -   **Small** footprint compliments Preact nicely
 -   **Familiar** names and ideas from Redux-like libraries
@@ -117,7 +117,7 @@ Creates a new store, which is a tiny evented state container.
 let store = createStore();
    store.subscribe( state => console.log(state) );
    store.setState({ a: 'b' });   // logs { a: 'b' }
-   store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
+   store.setState({ c: 'd' });   // logs { c: 'd' }
 ```
 
 Returns **[store](#store)** 
@@ -137,11 +137,13 @@ Apply a partial state object to the current state, invoking registered listeners
 
 ##### subscribe
 
-Register a listener function to be called whenever state is changed.
+Register a listener function to be called whenever state is changed, and returns the unsubscribe for that listener.
 
 **Parameters**
 
 -   `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+
+Returns **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** unsubscribe
 
 ##### unsubscribe
 
@@ -153,7 +155,7 @@ Remove a previously-registered listener function.
 
 ##### getState
 
-Retrieve the current state object.
+Retreive the current state object.
 
 Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** state
 

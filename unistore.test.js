@@ -36,7 +36,7 @@ describe('createStore()', () => {
 		let sub2 = jest.fn();
 
 		let rval = store.subscribe(sub1);
-		expect(rval).toBe(undefined);
+		expect(rval).toBeInstanceOf(Function);
 
 		store.setState({ a: 'b' });
 		expect(sub1).toBeCalledWith(store.getState());
@@ -54,31 +54,47 @@ describe('createStore()', () => {
 
 		let sub1 = jest.fn();
 		let sub2 = jest.fn();
+		let sub3 = jest.fn();
 
 		store.subscribe(sub1);
 		store.subscribe(sub2);
+		let unsub3 = store.subscribe(sub3);
 
 		store.setState({ a: 'b' });
 		expect(sub1).toBeCalled();
 		expect(sub2).toBeCalled();
-		
+		expect(sub3).toBeCalled();
+
 		sub1.mockReset();
 		sub2.mockReset();
-		
+		sub3.mockReset();
+
 		store.unsubscribe(sub2);
 
 		store.setState({ c: 'd' });
 		expect(sub1).toBeCalled();
 		expect(sub2).not.toBeCalled();
+		expect(sub3).toBeCalled();
 
 		sub1.mockReset();
 		sub2.mockReset();
+		sub3.mockReset();
 
 		store.unsubscribe(sub1);
 		
 		store.setState({ e: 'f' });
 		expect(sub1).not.toBeCalled();
 		expect(sub2).not.toBeCalled();
+		expect(sub3).toBeCalled();
+
+		sub3.mockReset();
+
+		unsub3();
+
+		store.setState({ g: 'h' });
+		expect(sub1).not.toBeCalled();
+		expect(sub2).not.toBeCalled();
+		expect(sub3).not.toBeCalled();
 	});
 });
 
