@@ -15,6 +15,11 @@ export function createStore(state) {
 	let listeners = [];
 	state = state || {};
 
+	function unsubscribe(listener) {
+		let i = listeners.indexOf(listener);
+		listeners.splice(i, !!~i);
+	}
+
 	/** An observable state container, returned from {@link createStore}
 	 *  @name store
 	 */
@@ -31,19 +36,19 @@ export function createStore(state) {
 		},
 
 		/** Register a listener function to be called whenever state is changed.
-		 *  @param {Function} listener
+		 *  @param {Function} listener	A function to call when state changes. Gets passed the new state.
+		 *  @returns {Function} unsubscribe()
 		 */
 		subscribe(listener) {
 			listeners.push(listener);
+			return () => { unsubscribe(listener); };
 		},
 
 		/** Remove a previously-registered listener function.
-		 *  @param {Function} listener
+		 *  @param {Function} listener	The callback previously passed to `subscribe()` that should be removed.
+		 *  @function
 		 */
-		unsubscribe(listener) {
-			let i = listeners.indexOf(listener);
-			listeners.splice(i, !!~i);
-		},
+		unsubscribe,
 
 		/** Retrieve the current state object.
 		 *  @returns {Object} state

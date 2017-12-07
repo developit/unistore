@@ -148,7 +148,9 @@ Register a listener function to be called whenever state is changed.
 
 **Parameters**
 
-- `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+- `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** A function to call when state changes. Gets passed the new state.
+
+Returns **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** unsubscribe()
 
 ##### unsubscribe
 
@@ -156,7 +158,7 @@ Remove a previously-registered listener function.
 
 **Parameters**
 
-- `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+- `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The callback previously passed to `subscribe()` that should be removed.
 
 ##### getState
 
@@ -192,12 +194,12 @@ Returns **Component** ConnectedComponent
 
 Provider exposes a store (passed as `props.store`) into context.
 
-Generally, an entire application is wrapped in a single `<Provider>` at the root.
+ Generally, an entire application is wrapped in a single `<Provider>` at the root.
 
 **Parameters**
 
 - `props` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
-- `props.store` **Store** A {Store} instance to expose via context.
+    - `props.store` **Store** A {Store} instance to expose via context.
 
 ### Reporting Issues
 
