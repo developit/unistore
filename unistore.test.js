@@ -61,10 +61,10 @@ describe('createStore()', () => {
 		store.setState({ a: 'b' });
 		expect(sub1).toBeCalled();
 		expect(sub2).toBeCalled();
-		
+
 		sub1.mockReset();
 		sub2.mockReset();
-		
+
 		store.unsubscribe(sub2);
 
 		store.setState({ c: 'd' });
@@ -75,10 +75,24 @@ describe('createStore()', () => {
 		sub2.mockReset();
 
 		store.unsubscribe(sub1);
-		
+
 		store.setState({ e: 'f' });
 		expect(sub1).not.toBeCalled();
 		expect(sub2).not.toBeCalled();
+	});
+
+	it('should process data in middleware', () => {
+		let store = createStore();
+		let mockMiddleware = jest.fn();
+		store.addMiddleware(state => ({ ...state, middleware: true }));
+		store.addMiddleware(state => {
+			mockMiddleware();
+			return state;
+		});
+		expect(store.getState()).toMatchObject({});
+		store.setState({ a: 'b' });
+		expect(mockMiddleware).toBeCalled();
+		expect(store.getState()).toMatchObject({ a: 'b', middleware: true });
 	});
 });
 
@@ -117,13 +131,13 @@ describe('connect()', () => {
 
 		expect(store.subscribe).toBeCalledWith(expect.any(Function));
 		expect(Child).toHaveBeenCalledWith({ store, children: expect.anything() }, expect.anything());
-		
+
 		Child.mockReset();
 
 		store.setState({ a: 'b' });
 		await sleep(1);
 		expect(Child).toHaveBeenCalledWith({ a: 'b', store, children: expect.anything() }, expect.anything());
-		
+
 		render(null, document.body, root);
 		expect(store.unsubscribe).toBeCalled();
 

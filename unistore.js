@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 
-
 /** Creates a new store, which is a tiny evented state container.
  *  @name createStore
  *  @param {Object} [state={}]		Optional initial state
@@ -13,21 +12,24 @@ import { h, Component } from 'preact';
  */
 export function createStore(state) {
 	let listeners = [];
+	let middleware = [];
 	state = state || {};
 
 	/** An observable state container, returned from {@link createStore}
-	 *  @name store
-	 */
+   *  @name store
+   */
 
 	return /** @lends store */ {
-
 		/** Apply a partial state object to the current state, invoking registered listeners.
 		 *  @param {Object} update				An object with properties to be merged into state
 		 *  @param {Boolean} [overwrite=false]	If `true`, update will replace state instead of being merged into it
 		 */
 		setState(update, overwrite) {
-			state = overwrite ? update : assign(assign({}, state), update);
-			for (let i=0; i<listeners.length; i++) listeners[i](state);
+			let afterProcessingUpdate = applyMiddlewareToState(update, middleware);
+			state = overwrite
+				? afterProcessingUpdate
+				: assign(assign({}, state), afterProcessingUpdate);
+			for (let i = 0; i < listeners.length; i++) listeners[i](state);
 		},
 
 		/** Register a listener function to be called whenever state is changed.
@@ -50,10 +52,33 @@ export function createStore(state) {
 		 */
 		getState() {
 			return state;
+		},
+
+		/**
+		 * Add a middleware to process state data.You can use middleware for global data processing.
+         * @param {Function} middlewareFunction
+		 * @example
+		 *  // before
+		 * 	store.setState({a:1})
+		 * 	store.getState() // {a:1}
+		 * 	// after
+		 * 	store.addMiddleware((state)=> ({...state, dataFromMiddleware1: true})
+		 * 	store.addMiddleware((state)=> ({...state, dataFromMiddleware2: true})
+		 * 	store.getState() // {a:1, dataFromMiddleware1: true, dataFromMiddleware2: true}
+         */
+		addMiddleware(middlewareFunction) {
+			if (!middlewareFunction) {
+				return;
+			}
+			else if (typeof middlewareFunction !== 'function') {
+				throw new Error('Need a function type parameter');
+			}
+			else {
+				middleware.push(middlewareFunction);
+			}
 		}
 	};
 }
-
 
 /** Wire a component up to the store. Passes state as props, re-renders on change.
  *  @param {Function|Array|String} mapStateToProps  A function mapping of store state to prop values, or an array/CSV of properties to map.
@@ -69,7 +94,7 @@ export function createStore(state) {
  *    export class Foo { render({ foo, bar }) { } }
  */
 export function connect(mapStateToProps, actions) {
-	if (typeof mapStateToProps!=='function') {
+	if (typeof mapStateToProps !== 'function') {
 		mapStateToProps = select(mapStateToProps || []);
 	}
 	return Child => {
@@ -91,10 +116,9 @@ export function connect(mapStateToProps, actions) {
 			};
 			this.render = props => h(Child, assign(assign(assign({}, boundActions), props), state));
 		}
-		return (Wrapper.prototype = new Component()).constructor = Wrapper;
+		return ((Wrapper.prototype = new Component()).constructor = Wrapper);
 	};
 }
-
 
 /** Provider exposes a store (passed as `props.store`) into context.
  *
@@ -104,7 +128,7 @@ export function connect(mapStateToProps, actions) {
  *  @param {Object} props
  *  @param {Store} props.store		A {Store} instance to expose via context.
  */
-export function Provider(){}
+export function Provider() {}
 Provider.prototype.getChildContext = function() {
 	return { store: this.props.store };
 };
@@ -112,10 +136,9 @@ Provider.prototype.render = function(props) {
 	return props.children[0];
 };
 
-
 // Bind an object/factory of actions to the store and wrap them.
 function mapActions(actions, store) {
-	if (typeof actions==='function') actions = actions(store);
+	if (typeof actions === 'function') actions = actions(store);
 	let mapped = {};
 	for (let i in actions) {
 		mapped[i] = createAction(store, actions[i]);
@@ -123,42 +146,49 @@ function mapActions(actions, store) {
 	return mapped;
 }
 
-
 // Bind a single action to the store and sequester its return value.
 function createAction(store, action) {
 	let args = [store.getState()];
-	for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
+	for (let i = 0; i < arguments.length; i++) args.push(arguments[i]);
 	let ret = action.apply(store, args);
-	if (ret!=null) {
+	if (ret != null) {
 		if (ret.then) ret.then(store.setState);
 		else store.setState(ret);
 	}
 }
 
-
 // select('foo,bar') creates a function of the form: ({ foo, bar }) => ({ foo, bar })
 function select(properties) {
-	if (typeof properties==='string') properties = properties.split(',');
+	if (typeof properties === 'string') properties = properties.split(',');
 	return state => {
 		let selected = {};
-		for (let i=properties.length; i--; ) {
+		for (let i = properties.length; i--; ) {
 			selected[properties[i]] = state[properties[i]];
 		}
 		return selected;
 	};
 }
 
-
 // Returns a boolean indicating if all keys and values match between two objects.
 function shallowEqual(a, b) {
-	for (let i in a) if (a[i]!==b[i]) return false;
+	for (let i in a) if (a[i] !== b[i]) return false;
 	for (let i in b) if (!(i in a)) return false;
 	return true;
 }
-
 
 // Lighter Object.assign stand-in
 function assign(obj, props) {
 	for (let i in props) obj[i] = props[i];
 	return obj;
+}
+
+// Reduce middleware array to process state data.
+function applyMiddlewareToState(state, middlewares) {
+	return middlewares.reduce((last, current) => {
+		const data = current(last);
+		if (last && !data){
+			console.warn('Middleware return void to state, but it should be the new state value.');
+		}
+		return data;
+	}, state);
 }
