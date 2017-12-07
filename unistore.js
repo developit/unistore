@@ -116,8 +116,10 @@ function mapActions(actions, store) {
 	let mapped = {};
 	if (typeof actions==='function') actions = actions(store);
 	for (let i in actions) {
-		mapped[i] = (...args) => {
-			let ret = actions[i](store.getState(), ...args);
+		mapped[i] = function() {
+			let args = [store.getState()];
+			for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
+			let ret = actions[i].apply(store, args);
 			if (ret!=null) {
 				if (ret.then) ret.then(store.setState);
 				else store.setState(ret);
