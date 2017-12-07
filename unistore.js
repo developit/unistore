@@ -131,7 +131,7 @@ function createAction(store, action) {
 			if (ret.then) ret.then(store.setState);
 			else store.setState(ret);
 		}
-	}
+	};
 }
 
 
