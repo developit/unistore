@@ -32,7 +32,7 @@ npm install --save unistore
 
 Then with a module bundler like [webpack](https://webpack.js.org) or [rollup](http://rollupjs.org), use as you would anything else:
 
-```javascript
+```js
 // using ES6 modules
 import { createStore, Provider, connect } from 'unistore'
 
@@ -117,7 +117,7 @@ Creates a new store, which is a tiny evented state container.
 let store = createStore();
    store.subscribe( state => console.log(state) );
    store.setState({ a: 'b' });   // logs { a: 'b' }
-   store.setState({ c: 'd' });   // logs { c: 'd' }
+   store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
 ```
 
 Returns **[store](#store)** 
@@ -179,6 +179,7 @@ Returns **Component** ConnectedComponent
 **Extends Component**
 
 Provider exposes a store (passed as `props.store`) into context.
+
  Generally, an entire application is wrapped in a single `<Provider>` at the root.
 
 **Parameters**
