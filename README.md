@@ -124,7 +124,7 @@ Creates a new store, which is a tiny evented state container.
 let store = createStore();
    store.subscribe( state => console.log(state) );
    store.setState({ a: 'b' });   // logs { a: 'b' }
-   store.setState({ c: 'd' });   // logs { c: 'd' }
+   store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
 ```
 
 Returns **[store](#store)** 
@@ -148,9 +148,9 @@ Register a listener function to be called whenever state is changed, and returns
 
 **Parameters**
 
-- `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+- `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** A function to call when state changes. Gets passed the new state.
 
-Returns **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** unsubscribe
+Returns **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** unsubscribe()
 
 ##### unsubscribe
 
@@ -158,11 +158,11 @@ Remove a previously-registered listener function.
 
 **Parameters**
 
-- `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+- `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The callback previously passed to `subscribe()` that should be removed.
 
 ##### getState
 
-Retreive the current state object.
+Retrieve the current state object.
 
 Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** state
 
@@ -194,12 +194,12 @@ Returns **Component** ConnectedComponent
 
 Provider exposes a store (passed as `props.store`) into context.
 
-Generally, an entire application is wrapped in a single `<Provider>` at the root.
+ Generally, an entire application is wrapped in a single `<Provider>` at the root.
 
 **Parameters**
 
 - `props` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
-- `props.store` **Store** A {Store} instance to expose via context.
+    - `props.store` **Store** A {Store} instance to expose via context.
 
 ### Reporting Issues
 

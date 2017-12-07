@@ -15,6 +15,11 @@ export function createStore(state) {
 	let listeners = [];
 	state = state || {};
 
+	function unsubscribe(listener) {
+		let i = listeners.indexOf(listener);
+		listeners.splice(i, !!~i);
+	}
+
 	/** An observable state container, returned from {@link createStore}
 	 *  @name store
 	 */
@@ -30,22 +35,20 @@ export function createStore(state) {
 			for (let i=0; i<listeners.length; i++) listeners[i](state);
 		},
 
-		/** Register a listener function to be called whenever state is changed, and returns the unsubscribe for that listener.
-		 *  @param {Function} listener
-		 *  @return {Function} unsubscribe
+		/** Register a listener function to be called whenever state is changed.
+		 *  @param {Function} listener	A function to call when state changes. Gets passed the new state.
+		 *  @returns {Function} unsubscribe()
 		 */
 		subscribe(listener) {
 			listeners.push(listener);
-			return () => this.unsubscribe(listener);
+			return () => { unsubscribe(listener); };
 		},
 
 		/** Remove a previously-registered listener function.
-		 *  @param {Function} listener
+		 *  @param {Function} listener	The callback previously passed to `subscribe()` that should be removed.
+		 *  @function
 		 */
-		unsubscribe(listener) {
-			let i = listeners.indexOf(listener);
-			listeners.splice(i, !!~i);
-		},
+		unsubscribe,
 
 		/** Retrieve the current state object.
 		 *  @returns {Object} state
@@ -85,12 +88,11 @@ export function connect(mapStateToProps, actions) {
 					this.setState(null);
 				}
 			};
-			let unsub;
 			this.componentDidMount = () => {
-				unsub = store.subscribe(update);
+				store.subscribe(update);
 			};
 			this.componentWillUnmount = () => {
-				unsub();
+				store.unsubscribe(update);
 			};
 			this.render = props => h(Child, assign(assign(assign({}, boundActions), props), state));
 		}
