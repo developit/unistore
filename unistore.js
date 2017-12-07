@@ -125,6 +125,7 @@ function mapActions(actions, store) {
 
 
 // Bind a single action to the store and sequester its return value.
+// Performance tests verifying this is the best solution: https://esbench.com/bench/5a295e6299634800a0349500
 function createAction(store, action) {
 	return function() {
 		let args = [store.getState()];
@@ -143,7 +144,7 @@ function select(properties) {
 	if (typeof properties==='string') properties = properties.split(',');
 	return state => {
 		let selected = {};
-		for (let i=properties.length; i--; ) {
+		for (let i=0; i<properties.length; i++) {
 			selected[properties[i]] = state[properties[i]];
 		}
 		return selected;
