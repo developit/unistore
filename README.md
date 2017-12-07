@@ -6,21 +6,21 @@
 
 # unistore
 
-> A tiny 680b centralized state container with component bindings for [Preact].
+> A tiny ~650b centralized state container with component bindings for [Preact].
 
--   **Small** footprint compliments Preact nicely
--   **Familiar** names and ideas from Redux-like libraries
--   **Useful** data selectors to extract properties from state
--   **Portable** actions can be moved into a common place and imported
--   **Functional** actions are just reducers
+- **Small** footprint compliments Preact nicely
+- **Familiar** names and ideas from Redux-like libraries
+- **Useful** data selectors to extract properties from state
+- **Portable** actions can be moved into a common place and imported
+- **Functional** actions are just reducers
 
 ## Table of Contents
 
--   [Install](#install)
--   [Usage](#usage)
--   [Examples](#examples)
--   [API](#api)
--   [License](#license)
+- [Install](#install)
+- [Usage](#usage)
+- [Examples](#examples)
+- [API](#api)
+- [License](#license)
 
 ## Install
 
@@ -57,41 +57,48 @@ let store = createStore({ count: 0 })
 
 // If actions is a function, it gets passed the store:
 let actions = store => ({
-	// Actions can just return a state update:
-	increment(state) {
-		return { count: state.count+1 }
-	},
+    // Actions can just return a state update:
+    increment(state) {
+        return { count: state.count+1 }
+    },
 
-	// The above example as an Arrow Function:
-	increment2: ({ count }) => ({ count: count+1 }),
+    // The above example as an Arrow Function:
+    increment2: ({ count }) => ({ count: count+1 }),
 
-	// Async actions can be pure async/promise functions:
-	async getStuff(state) {
-		let res = await fetch('/foo.json')
-		return { stuff: await res.json() }
-	},
+    //Actions receive current state as first parameter and any other params next
+    //check this function as <button onClick={incrementAndLog}>
+    incrementAndLog: ({ count }, event) => {
+        console.info(event)
+        return { count: count+1 }
+    },
 
-	// ... or just actions that call store.setState() later:
-	incrementAsync(state) {
-		setTimeout( () => {
-			store.setState({ count: state.count+1 })
-		}, 100)
-	}
+    // Async actions can be pure async/promise functions:
+    async getStuff(state) {
+        let res = await fetch('/foo.json')
+        return { stuff: await res.json() }
+    },
+
+    // ... or just actions that call store.setState() later:
+    incrementAsync(state) {
+        setTimeout( () => {
+            store.setState({ count: state.count+1 })
+        }, 100)
+    }
 })
 
 const App = connect('count', actions)(
-	({ count, increment }) => (
-		<div>
-			<p>Count: {count}</p>
-			<button onClick={increment}>Increment</button>
-		</div>
-	)
+    ({ count, increment }) => (
+        <div>
+            <p>Count: {count}</p>
+            <button onClick={increment}>Increment</button>
+        </div>
+    )
 )
 
 export default () => (
-	<Provider store={store}>
-		<App />
-	</Provider>
+    <Provider store={store}>
+        <App />
+    </Provider>
 )
 ```
 
@@ -109,7 +116,7 @@ Creates a new store, which is a tiny evented state container.
 
 **Parameters**
 
--   `state` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Optional initial state (optional, default `{}`)
+- `state` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Optional initial state (optional, default `{}`)
 
 **Examples**
 
@@ -132,8 +139,8 @@ Apply a partial state object to the current state, invoking registered listeners
 
 **Parameters**
 
--   `update` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** An object with properties to be merged into state
--   `overwrite` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** If `true`, update will replace state instead of being merged into it (optional, default `false`)
+- `update` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** An object with properties to be merged into state
+- `overwrite` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** If `true`, update will replace state instead of being merged into it (optional, default `false`)
 
 ##### subscribe
 
@@ -141,7 +148,7 @@ Register a listener function to be called whenever state is changed, and returns
 
 **Parameters**
 
--   `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+- `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
 
 Returns **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** unsubscribe
 
@@ -151,7 +158,7 @@ Remove a previously-registered listener function.
 
 **Parameters**
 
--   `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+- `listener` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
 
 ##### getState
 
@@ -165,13 +172,18 @@ Wire a component up to the store. Passes state as props, re-renders on change.
 
 **Parameters**
 
--   `mapStateToProps` **([Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) \| [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** A function mapping of store state to prop values, or an array/CSV of properties to map.
--   `actions` **([Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) \| [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object))?** Action functions (pure state mappings), or a factory returning them.
+- `mapStateToProps` **([Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) \| [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** A function mapping of store state to prop values, or an array/CSV of properties to map.
+- `actions` **([Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) \| [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object))?** Action functions (pure state mappings), or a factory returning them. Every action function gets current state as the first parameter and any other params next
 
 **Examples**
 
 ```javascript
 const Foo = connect('foo,bar')( ({ foo, bar }) => <div /> )
+```
+
+```javascript
+const actions = { someAction }
+   const Foo = connect('foo,bar', actions)( ({ foo, bar, someAction }) => <div /> )
 ```
 
 Returns **Component** ConnectedComponent
@@ -182,12 +194,12 @@ Returns **Component** ConnectedComponent
 
 Provider exposes a store (passed as `props.store`) into context.
 
- Generally, an entire application is wrapped in a single `<Provider>` at the root.
+Generally, an entire application is wrapped in a single `<Provider>` at the root.
 
 **Parameters**
 
--   `props` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
-    -   `props.store` **Store** A {Store} instance to expose via context.
+- `props` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+- `props.store` **Store** A {Store} instance to expose via context.
 
 ### Reporting Issues
 

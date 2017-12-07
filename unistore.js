@@ -9,7 +9,7 @@ import { h, Component } from 'preact';
  *    let store = createStore();
  *    store.subscribe( state => console.log(state) );
  *    store.setState({ a: 'b' });   // logs { a: 'b' }
- *    store.setState({ c: 'd' });   // logs { c: 'd' }
+ *    store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
  */
 export function createStore(state) {
 	let listeners = [];
@@ -47,7 +47,7 @@ export function createStore(state) {
 			listeners.splice(i, !!~i);
 		},
 
-		/** Retreive the current state object.
+		/** Retrieve the current state object.
 		 *  @returns {Object} state
 		 */
 		getState() {
@@ -59,10 +59,13 @@ export function createStore(state) {
 
 /** Wire a component up to the store. Passes state as props, re-renders on change.
  *  @param {Function|Array|String} mapStateToProps  A function mapping of store state to prop values, or an array/CSV of properties to map.
- *  @param {Function|Object} [actions] 				Action functions (pure state mappings), or a factory returning them.
+ *  @param {Function|Object} [actions] 				Action functions (pure state mappings), or a factory returning them. Every action function gets current state as the first parameter and any other params next
  *  @returns {Component} ConnectedComponent
  *  @example
  *    const Foo = connect('foo,bar')( ({ foo, bar }) => <div /> )
+ *  @example
+ *    const actions = { someAction }
+ *    const Foo = connect('foo,bar', actions)( ({ foo, bar, someAction }) => <div /> )
  *  @example
  *    @connect( state => ({ foo: state.foo, bar: state.bar }) )
  *    export class Foo { render({ foo, bar }) { } }
@@ -125,14 +128,17 @@ function mapActions(actions, store) {
 
 
 // Bind a single action to the store and sequester its return value.
+// Performance tests verifying this is the best solution: https://esbench.com/bench/5a295e6299634800a0349500
 function createAction(store, action) {
-	let args = [store.getState()];
-	for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
-	let ret = action.apply(store, args);
-	if (ret!=null) {
-		if (ret.then) ret.then(store.setState);
-		else store.setState(ret);
-	}
+	return function() {
+		let args = [store.getState()];
+		for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
+		let ret = action.apply(store, args);
+		if (ret!=null) {
+			if (ret.then) ret.then(store.setState);
+			else store.setState(ret);
+		}
+	};
 }
 
 
@@ -141,7 +147,7 @@ function select(properties) {
 	if (typeof properties==='string') properties = properties.split(',');
 	return state => {
 		let selected = {};
-		for (let i=properties.length; i--; ) {
+		for (let i=0; i<properties.length; i++) {
 			selected[properties[i]] = state[properties[i]];
 		}
 		return selected;
