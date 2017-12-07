@@ -65,6 +65,13 @@ let actions = store => ({
 	// The above example as an Arrow Function:
 	increment2: ({ count }) => ({ count: count+1 }),
 
+    //Actions receive current state as first parameter and any other params next
+    //check this function as <button onClick={incrementAndLog}>
+    incrementAndLog: ({ count }, event) => {
+        console.info(event)
+        return { count: count+1 }
+    },
+
 	// Async actions can be pure async/promise functions:
 	async getStuff(state) {
 		let res = await fetch('/foo.json')
@@ -164,12 +171,17 @@ Wire a component up to the store. Passes state as props, re-renders on change.
 **Parameters**
 
 -   `mapStateToProps` **([Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) \| [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** A function mapping of store state to prop values, or an array/CSV of properties to map.
--   `actions` **([Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) \| [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object))?** Action functions (pure state mappings), or a factory returning them.
+-   `actions` **([Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) \| [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object))?** Action functions (pure state mappings), or a factory returning them. Every action function gets current state as the first parameter and any other params next
 
 **Examples**
 
 ```javascript
 const Foo = connect('foo,bar')( ({ foo, bar }) => <div /> )
+```
+
+```javascript
+const actions = { someAction }
+   const Foo = connect('foo,bar', actions)( ({ foo, bar, someAction }) => <div /> )
 ```
 
 Returns **Component** ConnectedComponent
