@@ -1,10 +1,5 @@
 import { h, Component } from 'preact';
 
-function assign(obj, props) {
-	for (let i in props) obj[i] = props[i];
-	return obj;
-}
-
 
 /** Creates a new store, which is a tiny evented state container.
  *  @name createStore
@@ -148,4 +143,11 @@ function shallowEqual(a, b) {
 	for (let i in a) if (a[i]!==b[i]) return false;
 	for (let i in b) if (!(i in a)) return false;
 	return true;
+}
+
+
+// Lighter Object.assign stand-in
+function assign(obj, props) {
+	for (let i in props) obj[i] = props[i];
+	return obj;
 }
