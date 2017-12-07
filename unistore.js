@@ -66,7 +66,9 @@ export function createStore(state) {
  *    export class Foo { render({ foo, bar }) { } }
  */
 export function connect(mapStateToProps, actions) {
-	if (typeof mapStateToProps!=='function') mapStateToProps = select(mapStateToProps || []);
+	if (typeof mapStateToProps!=='function') {
+		mapStateToProps = select(mapStateToProps || []);
+	}
 	return Child => {
 		function Wrapper(props, { store }) {
 			let state = mapStateToProps(store ? store.getState() : {}, props);
@@ -92,8 +94,9 @@ export function connect(mapStateToProps, actions) {
 
 
 /** Provider exposes a store (passed as `props.store`) into context.
+ *
  *  Generally, an entire application is wrapped in a single `<Provider>` at the root.
- *  @constructor
+ *  @class
  *  @extends Component
  *  @param {Object} props
  *  @param {Store} props.store		A {Store} instance to expose via context.
@@ -107,21 +110,26 @@ Provider.prototype.render = function(props) {
 };
 
 
+// Bind an object/factory of actions to the store and wrap them.
 function mapActions(actions, store) {
-	let mapped = {};
 	if (typeof actions==='function') actions = actions(store);
+	let mapped = {};
 	for (let i in actions) {
-		mapped[i] = function() {
-			let args = [store.getState()];
-			for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
-			let ret = actions[i].apply(store, args);
-			if (ret!=null) {
-				if (ret.then) ret.then(store.setState);
-				else store.setState(ret);
-			}
-		};
+		mapped[i] = createAction(store, actions[i]);
 	}
 	return mapped;
+}
+
+
+// Bind a single action to the store and sequester its return value.
+function createAction(store, action) {
+	let args = [store.getState()];
+	for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
+	let ret = action.apply(store, args);
+	if (ret!=null) {
+		if (ret.then) ret.then(store.setState);
+		else store.setState(ret);
+	}
 }
 
 
@@ -130,7 +138,7 @@ function select(properties) {
 	if (typeof properties==='string') properties = properties.split(',');
 	return state => {
 		let selected = {};
-		for (let i=0; i<properties.length; i++) {
+		for (let i=properties.length; i--; ) {
 			selected[properties[i]] = state[properties[i]];
 		}
 		return selected;

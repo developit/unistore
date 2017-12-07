@@ -18,14 +18,12 @@ export default {
 		name: pkg.amdName || pkg.name,
 		file: (format==='es' && pkg.module) || (format==='umd' && pkg['umd:main']) || pkg.main
 	},
-	external: ['preact'].concat(Object.keys(pkg.dependencies)),
+	external: ['preact'],
 	globals: {
-		preact: 'preact',
-		'preact-context-provider': 'Provider'
+		preact: 'preact'
 	},
 	plugins: [
 		buble({
-			objectAssign: 'Object.assign',
 			jsx: 'h'
 		}),
 		es3(),
