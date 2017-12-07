@@ -9,7 +9,7 @@ import { h, Component } from 'preact';
  *    let store = createStore();
  *    store.subscribe( state => console.log(state) );
  *    store.setState({ a: 'b' });   // logs { a: 'b' }
- *    store.setState({ c: 'd' });   // logs { c: 'd' }
+ *    store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
  */
 export function createStore(state) {
 	let listeners = [];
@@ -45,7 +45,7 @@ export function createStore(state) {
 			listeners.splice(i, !!~i);
 		},
 
-		/** Retreive the current state object.
+		/** Retrieve the current state object.
 		 *  @returns {Object} state
 		 */
 		getState() {
