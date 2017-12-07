@@ -6,6 +6,7 @@
   "module": "dist/unistore.es.js",
   "main": "dist/unistore.js",
   "umd:main": "dist/unistore.umd.js",
+  "typings": "index.d.ts",
   "scripts": {
     "build": "npm run -s transpile && npm run -s size && npm run -s docs",
     "transpile": "rollup -c --environment FORMAT:umd && rollup -c --environment FORMAT:cjs && rollup -c --environment FORMAT:es",
@@ -40,7 +41,8 @@
   },
   "files": [
     "unistore.js",
-    "dist"
+    "dist",
+    "index.d.ts"
   ],
   "keywords": [
     "preact",
