@@ -153,7 +153,7 @@ Remove a previously-registered listener function.
 
 ##### getState
 
-Retreive the current state object.
+Retrieve the current state object.
 
 Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** state
 
