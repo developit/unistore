@@ -6,7 +6,7 @@
 
 # unistore
 
-> A tiny 650b centralized state container with component bindings for [Preact].
+> A tiny 666b centralized state container with component bindings for [Preact].
 
 -   **Small** footprint compliments Preact nicely
 -   **Familiar** names and ideas from Redux-like libraries
