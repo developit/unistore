@@ -8,6 +8,7 @@ function assign(obj, props) {
 
 /** Creates a new store, which is a tiny evented state container.
  *  @name createStore
+ *  @param {Object} [state={}]		Optional initial state
  *  @returns {store}
  *  @example
  *    let store = createStore();
@@ -15,8 +16,9 @@ function assign(obj, props) {
  *    store.setState({ a: 'b' });   // logs { a: 'b' }
  *    store.setState({ c: 'd' });   // logs { c: 'd' }
  */
-export function createStore(state={}) {
+export function createStore(state) {
 	let listeners = [];
+	state = state || {};
 
 	/** An observable state container, returned from {@link createStore}
 	 *  @name store
