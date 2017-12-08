@@ -25,7 +25,7 @@ declare module "unistore" {
 
 	export type ActionCreator<K> = (store: Store<K>) => ActionMap<K>;
 
-	export type StateMapper<T, K, I> = (state: K, props?: T) => I;
+	export type StateMapper<T, K, I> = (state: K, props: T) => I;
 
 	// TODO: Child should not be `any`.
 	export function connect<T, S, K, I>(
