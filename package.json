@@ -13,7 +13,8 @@
     "size": "strip-json-comments --no-whitespace dist/unistore.js | gzip-size",
     "docs": "documentation readme unistore.js -q --section API && sed -i '' 's/-   /- /' README.md",
     "test": "eslint unistore.js && jest",
-    "prepublishOnly": "npm run build"
+    "prepare": "npm run build",
+    "release": "npm run -s build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "eslintConfig": {
     "extends": "eslint-config-developit",
