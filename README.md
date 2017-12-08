@@ -133,6 +133,18 @@ Returns **[store](#store)**
 
 An observable state container, returned from [createStore](#createstore)
 
+##### action
+
+Create a bound copy of the given action function.
+ The bound returned function invokes action() and persists the result back to the store.
+ If the return value of `action` is a Promise, the resolved value will be used as state.
+
+**Parameters**
+
+- `action` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** An action of the form `action(state, ...args) -> stateUpdate`
+
+Returns **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** boundAction()
+
 ##### setState
 
 Apply a partial state object to the current state, invoking registered listeners.

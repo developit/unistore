@@ -28,21 +28,42 @@ export function createStore(state) {
 		listeners = out;
 	}
 
+	function setState(update, overwrite) {
+		state = overwrite ? update : assign(assign({}, state), update);
+		let currentListeners = listeners;
+		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state);
+	}
+
 	/** An observable state container, returned from {@link createStore}
 	 *  @name store
 	 */
 
 	return /** @lends store */ {
 
+		/** Create a bound copy of the given action function.
+		 *  The bound returned function invokes action() and persists the result back to the store.
+		 *  If the return value of `action` is a Promise, the resolved value will be used as state.
+		 *  @param {Function} action	An action of the form `action(state, ...args) -> stateUpdate`
+		 *  @returns {Function} boundAction()
+		 */
+		action(action) {
+			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500
+			return function() {
+				let args = [state];
+				for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
+				let ret = action.apply(this, args);
+				if (ret!=null) {
+					if (ret.then) ret.then(setState);
+					else setState(ret);
+				}
+			};
+		},
+		
 		/** Apply a partial state object to the current state, invoking registered listeners.
 		 *  @param {Object} update				An object with properties to be merged into state
 		 *  @param {Boolean} [overwrite=false]	If `true`, update will replace state instead of being merged into it
 		 */
-		setState(update, overwrite) {
-			state = overwrite ? update : assign(assign({}, state), update);
-			let currentListeners = listeners;
-			for (let i=0; i<currentListeners.length; i++) currentListeners[i](state);
-		},
+		setState,
 
 		/** Register a listener function to be called whenever state is changed. Returns an `unsubscribe()` function.
 		 *  @param {Function} listener	A function to call when state changes. Gets passed the new state.
@@ -133,24 +154,9 @@ function mapActions(actions, store) {
 	if (typeof actions==='function') actions = actions(store);
 	let mapped = {};
 	for (let i in actions) {
-		mapped[i] = createAction(store, actions[i]);
+		mapped[i] = store.action(actions[i]);
 	}
 	return mapped;
-}
-
-
-// Bind a single action to the store and sequester its return value.
-// Performance tests verifying this is the best solution: https://esbench.com/bench/5a295e6299634800a0349500
-function createAction(store, action) {
-	return function() {
-		let args = [store.getState()];
-		for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
-		let ret = action.apply(store, args);
-		if (ret!=null) {
-			if (ret.then) ret.then(store.setState);
-			else store.setState(ret);
-		}
-	};
 }
 
 
