@@ -16,8 +16,16 @@ export function createStore(state) {
 	state = state || {};
 
 	function unsubscribe(listener) {
-		let i = listeners.indexOf(listener);
-		listeners.splice(i, !!~i);
+		let out = [];
+		for (let i=0; i<listeners.length; i++) {
+			if (listeners[i]===listener) {
+				listener = null;
+			}
+			else {
+				out.push(listeners[i]);
+			}
+		}
+		listeners = out;
 	}
 
 	/** An observable state container, returned from {@link createStore}
@@ -32,7 +40,8 @@ export function createStore(state) {
 		 */
 		setState(update, overwrite) {
 			state = overwrite ? update : assign(assign({}, state), update);
-			for (let i=0; i<listeners.length; i++) listeners[i](state);
+			let currentListeners = listeners;
+			for (let i=0; i<currentListeners.length; i++) currentListeners[i](state);
 		},
 
 		/** Register a listener function to be called whenever state is changed.
