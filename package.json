@@ -11,7 +11,8 @@
     "build": "npm run -s transpile && npm run -s size && npm run -s docs",
     "transpile": "rollup -c --environment FORMAT:umd && rollup -c --environment FORMAT:cjs && rollup -c --environment FORMAT:es",
     "size": "strip-json-comments --no-whitespace dist/unistore.js | gzip-size",
-    "docs": "documentation readme unistore.js -q --section API && sed -i '' 's/-   /- /' README.md",
+    "docs": "documentation readme unistore.js -q --section API && npm run -s fixreadme",
+    "fixreadme": "node -e 'var fs=require(\"fs\");fs.writeFileSync(\"README.md\", fs.readFileSync(\"README.md\", \"utf8\").replace(/^-   /gm, \"- \"))'",
     "test": "eslint unistore.js && jest",
     "prepare": "npm run build",
     "release": "npm run -s build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"

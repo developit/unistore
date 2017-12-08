@@ -211,7 +211,7 @@ Provider exposes a store (passed as `props.store`) into context.
 **Parameters**
 
 - `props` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
-    - `props.store` **Store** A {Store} instance to expose via context.
+    -   `props.store` **Store** A {Store} instance to expose via context.
 
 ### Reporting Issues
 
