@@ -16,13 +16,8 @@
     "prepublishOnly": "npm run build"
   },
   "eslintConfig": {
-    "extends": "eslint-config-synacor",
-    "globals": {
-      "jest": 1
-    },
+    "extends": "eslint-config-developit",
     "rules": {
-      "eqeqeq": 0,
-      "guard-for-in": 0,
       "prefer-rest-params": 0
     }
   },
@@ -66,7 +61,7 @@
     "babel-preset-env": "^1.6.1",
     "documentation": "^4.0.0",
     "eslint": "^4.12.1",
-    "eslint-config-synacor": "^2.0.2",
+    "eslint-config-developit": "^1.1.1",
     "gzip-size-cli": "^2.1.0",
     "jest": "^21.2.1",
     "preact": "^8.2.6",
