@@ -16,8 +16,16 @@ export function createStore(state) {
 	state = state || {};
 
 	function unsubscribe(listener) {
-		let i = listeners.indexOf(listener);
-		listeners.splice(i, !!~i);
+		let out = [];
+		for (let i=0; i<listeners.length; i++) {
+			if (listeners[i]===listener) {
+				listener = null;
+			}
+			else {
+				out.push(listeners[i]);
+			}
+		}
+		listeners = out;
 	}
 
 	/** An observable state container, returned from {@link createStore}
@@ -32,10 +40,11 @@ export function createStore(state) {
 		 */
 		setState(update, overwrite) {
 			state = overwrite ? update : assign(assign({}, state), update);
-			for (let i=0; i<listeners.length; i++) listeners[i](state);
+			let currentListeners = listeners;
+			for (let i=0; i<currentListeners.length; i++) currentListeners[i](state);
 		},
 
-		/** Register a listener function to be called whenever state is changed.
+		/** Register a listener function to be called whenever state is changed. Returns an `unsubscribe()` function.
 		 *  @param {Function} listener	A function to call when state changes. Gets passed the new state.
 		 *  @returns {Function} unsubscribe()
 		 */
@@ -83,9 +92,13 @@ export function connect(mapStateToProps, actions) {
 			let boundActions = actions ? mapActions(actions, store) : { store };
 			let update = () => {
 				let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
-				if (!shallowEqual(mapped, state)) {
+				for (let i in mapped) if (mapped[i]!==state[i]) {
 					state = mapped;
-					this.setState(null);
+					return this.setState(null);
+				}
+				for (let i in state) if (!(i in mapped)) {
+					state = mapped;
+					return this.setState(null);
 				}
 			};
 			this.componentDidMount = () => {
@@ -109,13 +122,10 @@ export function connect(mapStateToProps, actions) {
  *  @param {Object} props
  *  @param {Store} props.store		A {Store} instance to expose via context.
  */
-export function Provider(){}
-Provider.prototype.getChildContext = function() {
-	return { store: this.props.store };
-};
-Provider.prototype.render = function(props) {
-	return props.children[0];
-};
+export function Provider(props) {
+	this.getChildContext = () => ({ store: props.store });
+}
+Provider.prototype.render = props => props.children[0];
 
 
 // Bind an object/factory of actions to the store and wrap them.
@@ -154,14 +164,6 @@ function select(properties) {
 		}
 		return selected;
 	};
-}
-
-
-// Returns a boolean indicating if all keys and values match between two objects.
-function shallowEqual(a, b) {
-	for (let i in a) if (a[i]!==b[i]) return false;
-	for (let i in b) if (!(i in a)) return false;
-	return true;
 }
 
 
