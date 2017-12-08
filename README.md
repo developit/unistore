@@ -144,7 +144,7 @@ Apply a partial state object to the current state, invoking registered listeners
 
 ##### subscribe
 
-Register a listener function to be called whenever state is changed, and returns the unsubscribe for that listener.
+Register a listener function to be called whenever state is changed. Returns an `unsubscribe()` function.
 
 **Parameters**
 
