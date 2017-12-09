@@ -10,7 +10,7 @@
   "scripts": {
     "build": "npm run -s transpile && npm run -s size && npm run -s docs",
     "transpile": "rollup -c --environment FORMAT:umd && rollup -c --environment FORMAT:cjs && rollup -c --environment FORMAT:es",
-    "size": "strip-json-comments --no-whitespace dist/unistore.js | gzip-size",
+    "size": "strip-json-comments --no-whitespace dist/unistore.js | bundlesize",
     "docs": "documentation readme unistore.js -q --section API && npm run -s fixreadme",
     "fixreadme": "node -e 'var fs=require(\"fs\");fs.writeFileSync(\"README.md\", fs.readFileSync(\"README.md\", \"utf8\").replace(/^-   /gm, \"- \"))'",
     "test": "eslint unistore.js && jest",
@@ -23,6 +23,12 @@
       "prefer-rest-params": 0
     }
   },
+  "bundlesize": [
+    {
+      "path": "dist/unistore.js",
+      "maxSize": "1 kB"
+    }
+  ],
   "babel": {
     "presets": [
       [
@@ -61,10 +67,10 @@
     "babel-jest": "^21.2.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
+    "bundlesize": "^0.15.3",
     "documentation": "^4.0.0",
     "eslint": "^4.12.1",
     "eslint-config-developit": "^1.1.1",
-    "gzip-size-cli": "^2.1.0",
     "jest": "^21.2.1",
     "preact": "^8.2.6",
     "rollup": "^0.52.1",
