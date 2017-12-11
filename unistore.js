@@ -12,26 +12,16 @@ import { h, Component } from 'preact';
  *    store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
  */
 export function createStore(state) {
-	let listeners = [];
+	let listeners = new Set();
 	state = state || {};
 
 	function unsubscribe(listener) {
-		let out = [];
-		for (let i=0; i<listeners.length; i++) {
-			if (listeners[i]===listener) {
-				listener = null;
-			}
-			else {
-				out.push(listeners[i]);
-			}
-		}
-		listeners = out;
+		listeners.delete(listener) && (listener = null);
 	}
 
 	function setState(update, overwrite) {
 		state = overwrite ? update : assign(assign({}, state), update);
-		let currentListeners = listeners;
-		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state);
+		listeners.forEach(listener => listener(state));
 	}
 
 	/** An observable state container, returned from {@link createStore}
@@ -70,7 +60,7 @@ export function createStore(state) {
 		 *  @returns {Function} unsubscribe()
 		 */
 		subscribe(listener) {
-			listeners.push(listener);
+			listeners.add(listener);
 			return () => { unsubscribe(listener); };
 		},
 
