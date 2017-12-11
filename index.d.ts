@@ -4,14 +4,14 @@
 // I - Injected props to wrapped component
 import * as Preact from "preact";
 
-export type Listener<K> = (state: K) => void;
+export type Listener<K> = (state: K, action?: Action<K>) => void;
 export type Unsubscribe = () => void;
 export type Action<K> = (state: K, ...args) => void;
 export type BoundAction = () => void;
 
 export interface Store<K> {
 	action(action: Action<K>): BoundAction;
-	setState(update: object, overwrite?: boolean): void;
+	setState(update: object, overwrite?: boolean, action?: Action<K>): void;
 	subscribe(f: Listener<K>): Unsubscribe;
 	unsubscribe(f: Listener<K>): void;
 	getState(): K;

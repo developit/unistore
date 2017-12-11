@@ -35,19 +35,20 @@ describe('createStore()', () => {
 
 		let sub1 = jest.fn();
 		let sub2 = jest.fn();
+		let action = undefined;
 
 		let rval = store.subscribe(sub1);
 		expect(rval).toBeInstanceOf(Function);
 
 		store.setState({ a: 'b' });
-		expect(sub1).toBeCalledWith(store.getState());
+		expect(sub1).toBeCalledWith(store.getState(), action);
 
 		store.subscribe(sub2);
 		store.setState({ c: 'd' });
 
 		expect(sub1).toHaveBeenCalledTimes(2);
-		expect(sub1).toHaveBeenLastCalledWith(store.getState());
-		expect(sub2).toBeCalledWith(store.getState());
+		expect(sub1).toHaveBeenLastCalledWith(store.getState(), action);
+		expect(sub2).toBeCalledWith(store.getState(), action);
 	});
 
 	it('should unsubscribe', () => {
@@ -82,7 +83,7 @@ describe('createStore()', () => {
 		sub3.mockReset();
 
 		store.unsubscribe(sub1);
-		
+
 		store.setState({ e: 'f' });
 		expect(sub1).not.toBeCalled();
 		expect(sub2).not.toBeCalled();
@@ -134,13 +135,13 @@ describe('connect()', () => {
 
 		expect(store.subscribe).toBeCalledWith(expect.any(Function));
 		expect(Child).toHaveBeenCalledWith({ store, children: expect.anything() }, expect.anything());
-		
+
 		Child.mockReset();
 
 		store.setState({ a: 'b' });
 		await sleep(1);
 		expect(Child).toHaveBeenCalledWith({ a: 'b', store, children: expect.anything() }, expect.anything());
-		
+
 		render(null, document.body, root);
 		expect(store.unsubscribe).toBeCalled();
 
