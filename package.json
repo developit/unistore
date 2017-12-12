@@ -12,7 +12,7 @@
     "build:main": "microbundle",
     "build:integrations": "microbundle src/integrations/*.js -o x.js -f cjs",
     "build:combined": "microbundle src/combined/*.js -o full/x.js",
-    "size": "strip-json-comments --no-whitespace dist/unistore.js | bundlesize",
+    "size": "strip-json-comments --no-whitespace dist/unistore.js | gzip-size && bundlesize",
     "docs": "documentation readme unistore.js -q --section API && npm run -s fixreadme",
     "fixreadme": "node -e 'var fs=require(\"fs\");fs.writeFileSync(\"README.md\", fs.readFileSync(\"README.md\", \"utf8\").replace(/^-   /gm, \"- \"))'",
     "test": "eslint src && npm run build && jest",
