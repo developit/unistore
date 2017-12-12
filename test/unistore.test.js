@@ -1,5 +1,6 @@
 import { h, render } from 'preact';
-import { createStore, Provider, connect } from './unistore';
+import createStore from '../src';
+import { Provider, connect } from '../src/integrations/preact';
 
 const sleep = ms => new Promise( r => setTimeout(r, ms) );
 
