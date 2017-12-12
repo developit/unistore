@@ -2,20 +2,22 @@
   "name": "unistore",
   "version": "2.4.0",
   "description": "Dead simple centralized state container (store) with preact bindings.",
-  "source": "unistore.js",
+  "source": "src/index.js",
   "module": "dist/unistore.es.js",
   "main": "dist/unistore.js",
   "umd:main": "dist/unistore.umd.js",
   "typings": "index.d.ts",
   "scripts": {
-    "build": "npm run -s transpile && npm run -s size && npm run -s docs",
-    "transpile": "rollup -c --environment FORMAT:umd && rollup -c --environment FORMAT:cjs && rollup -c --environment FORMAT:es",
+    "build": "npm-run-all --silent -p build:main build:integrations build:combined -s size docs",
+    "build:main": "microbundle",
+    "build:integrations": "microbundle src/integrations/*.js -o x.js -f cjs",
+    "build:combined": "microbundle src/combined/*.js -o full/x.js",
     "size": "strip-json-comments --no-whitespace dist/unistore.js | bundlesize",
     "docs": "documentation readme unistore.js -q --section API && npm run -s fixreadme",
     "fixreadme": "node -e 'var fs=require(\"fs\");fs.writeFileSync(\"README.md\", fs.readFileSync(\"README.md\", \"utf8\").replace(/^-   /gm, \"- \"))'",
-    "test": "eslint unistore.js && jest",
-    "prepare": "npm run build",
-    "release": "npm run -s build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+    "test": "eslint src && npm run build && jest",
+    "prepare": "npm t",
+    "release": "npm t && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "eslintConfig": {
     "extends": "eslint-config-developit",
@@ -25,8 +27,16 @@
   },
   "bundlesize": [
     {
+      "path": "full/preact.js",
+      "maxSize": "750b"
+    },
+    {
       "path": "dist/unistore.js",
-      "maxSize": "1 kB"
+      "maxSize": "400b"
+    },
+    {
+      "path": "preact.js",
+      "maxSize": "600b"
     }
   ],
   "babel": {
@@ -50,8 +60,10 @@
     ]
   },
   "files": [
-    "unistore.js",
+    "src",
     "dist",
+    "preact.js",
+    "preact.js.map",
     "index.d.ts"
   ],
   "keywords": [
@@ -72,16 +84,15 @@
     "eslint": "^4.12.1",
     "eslint-config-developit": "^1.1.1",
     "jest": "^21.2.1",
+    "npm-run-all": "^4.1.2",
     "preact": "^8.2.6",
-    "rollup": "^0.52.1",
-    "rollup-plugin-buble": "^0.18.0",
-    "rollup-plugin-es3": "^1.0.3",
-    "rollup-plugin-post-replace": "^1.0.0",
-    "rollup-plugin-uglify": "^2.0.1",
-    "strip-json-comments-cli": "^1.0.1",
-    "uglify-js": "^2.8.29"
+    "strip-json-comments-cli": "^1.0.1"
   },
   "peerDependencies": {
-    "preact": "*"
+    "preact": "*",
+    "react": "*"
+  },
+  "dependencies": {
+    "microbundle": "^0.2.3"
   }
 }
