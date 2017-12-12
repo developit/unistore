@@ -62,6 +62,7 @@
   "files": [
     "src",
     "dist",
+    "full",
     "preact.js",
     "preact.js.map",
     "index.d.ts"
