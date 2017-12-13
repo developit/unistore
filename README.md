@@ -122,8 +122,8 @@ export default () => (
 Make sure to have [Redux devtools extension](https://github.com/zalmoxisus/redux-devtools-extension) previously installed.
 
 ```js
-import { createStore } from 'unistore'
-import devtools from 'unistore/devtools'
+import createStore from 'unistore'
+import devtools    from 'unistore/devtools'
 
 let initialState = { count: 0 };
 let store = process.env.NODE_ENV === 'production' ?  createStore(initialState) : devtools(createStore(initialState));
