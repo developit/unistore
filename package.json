@@ -85,6 +85,7 @@
     "eslint": "^4.12.1",
     "eslint-config-developit": "^1.1.1",
     "jest": "^21.2.1",
+    "microbundle": "^0.2.4",
     "npm-run-all": "^4.1.2",
     "preact": "^8.2.6",
     "strip-json-comments-cli": "^1.0.1"
@@ -92,8 +93,5 @@
   "peerDependencies": {
     "preact": "*",
     "react": "*"
-  },
-  "dependencies": {
-    "microbundle": "^0.2.3"
   }
 }
