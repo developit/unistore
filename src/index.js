@@ -46,14 +46,18 @@ export default function createStore(state) {
 		 *  @returns {Function} boundAction()
 		 */
 		action(action) {
+			function apply(result) {
+				setState(result, false, action);
+			}
+
 			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500
 			return function() {
 				let args = [state];
 				for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
 				let ret = action.apply(this, args);
 				if (ret!=null) {
-					if (ret.then) ret.then(res => setState(res, false, action));
-					else setState(ret, false, action);
+					if (ret.then) ret.then(apply);
+					else apply(ret);
 				}
 			};
 		},
