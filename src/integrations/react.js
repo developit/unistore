@@ -1,6 +1,10 @@
 import { createElement, Children, Component } from 'react';
 import { assign, mapActions, select } from '../util';
 
+const CONTEXT_TYPES = {
+	store: () => {}
+};
+
 /** Wire a component up to the store. Passes state as props, re-renders on change.
  *  @param {Function|Array|String} mapStateToProps  A function mapping of store state to prop values, or an array/CSV of properties to map.
  *  @param {Function|Object} [actions] 				Action functions (pure state mappings), or a factory returning them. Every action function gets current state as the first parameter and any other params next
@@ -43,6 +47,7 @@ export function connect(mapStateToProps, actions) {
 			};
 			this.render = () => createElement(Child, assign(assign(assign({}, boundActions), this.props), state));
 		}
+		Wrapper.contextTypes = CONTEXT_TYPES;
 		return (Wrapper.prototype = Object.create(Component)).constructor = Wrapper;
 	};
 	// return Child => (
@@ -94,6 +99,4 @@ export class Provider extends Component {
 		return Children.only(this.props.children);
 	}
 }
-Provider.contextTypes = {
-	store: () => {}
-};
+Provider.childContextTypes = CONTEXT_TYPES;
