@@ -65,6 +65,8 @@
     "full",
     "preact.js",
     "preact.js.map",
+    "react.js",
+    "react.js.map",
     "index.d.ts"
   ],
   "keywords": [
