@@ -123,6 +123,16 @@ describe('connect()', () => {
 		expect(store.subscribe).toBeCalled();
 	});
 
+	it('should transform string selector', () => {
+		let state = { a: 'b', b: 'c', c: 'd' };
+		const store = { subscribe: jest.fn(), getState: () => state };
+		const Child = jest.fn();
+		const ConnectedChild = connect('a, b')(Child);
+		render(<Provider store={store}><ConnectedChild /></Provider>, document.body);
+		expect(Child).toHaveBeenCalledWith({ a: 'b', b: 'c', store, children: expect.anything() }, expect.anything());
+		expect(store.subscribe).toBeCalled();
+	});
+
 	it('should subscribe to store', async () => {
 		const store = createStore();
 		const Child = jest.fn();

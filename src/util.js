@@ -11,7 +11,7 @@ export function mapActions(actions, store) {
 
 // select('foo,bar') creates a function of the form: ({ foo, bar }) => ({ foo, bar })
 export function select(properties) {
-	if (typeof properties==='string') properties = properties.split(',');
+	if (typeof properties==='string') properties = properties.split(/\s*,\s*/);
 	return state => {
 		let selected = {};
 		for (let i=0; i<properties.length; i++) {
