@@ -28,11 +28,11 @@ export function connect(mapStateToProps, actions) {
 				let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
 				for (let i in mapped) if (mapped[i]!==state[i]) {
 					state = mapped;
-					return this.forceUpdate(null);
+					return this.forceUpdate();
 				}
 				for (let i in state) if (!(i in mapped)) {
 					state = mapped;
-					return this.forceUpdate(null);
+					return this.forceUpdate();
 				}
 			};
 			this.componentDidMount = () => {
