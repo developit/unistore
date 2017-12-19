@@ -51,36 +51,6 @@ export function connect(mapStateToProps, actions) {
 		Wrapper.contextTypes = CONTEXT_TYPES;
 		return (Wrapper.prototype = Object.create(Component)).constructor = Wrapper;
 	};
-	// return Child => (
-	// 	class Wrapper extends Component {
-	// 		constructor(props, context) {
-	// 			super(props, context);
-	// 			let { store } = context;
-	// 			this._state = mapStateToProps(store ? store.getState() : {}, props);
-	// 			this.boundActions = actions ? mapActions(actions, store) : { store };
-	// 			this.update = () => {
-	// 				let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
-	// 				for (let i in mapped) if (mapped[i]!==this._state[i]) {
-	// 					this._state = mapped;
-	// 					return this.setState(null);
-	// 				}
-	// 				for (let i in this._state) if (!(i in mapped)) {
-	// 					this._state = mapped;
-	// 					return this.setState(null);
-	// 				}
-	// 			};
-	// 		}
-	// 		componentDidMount() {
-	// 			this.context.store.subscribe(this.update);
-	// 		}
-	// 		componentWillUnmount() {
-	// 			this.context.store.unsubscribe(this.update);
-	// 		}
-	// 		render() {
-	// 			return createElement(Child, assign(assign(assign({}, this.boundActions), this.props), this._state));
-	// 		}
-	// 	}
-	// );
 }
 
 
