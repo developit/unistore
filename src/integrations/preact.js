@@ -34,6 +34,7 @@ export function connect(mapStateToProps, actions) {
 				}
 			};
 			this.componentDidMount = () => {
+				update();
 				store.subscribe(update);
 			};
 			this.componentWillUnmount = () => {
