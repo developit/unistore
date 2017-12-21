@@ -84,6 +84,8 @@
     "babel-preset-env": "^1.6.1",
     "bundlesize": "^0.15.3",
     "documentation": "^4.0.0",
+    "enzyme": "^3.2.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.12.1",
     "eslint-config-developit": "^1.1.1",
     "gzip-size-cli": "^2.1.0",
@@ -91,6 +93,9 @@
     "microbundle": "^0.2.4",
     "npm-run-all": "^4.1.2",
     "preact": "^8.2.6",
+    "raf": "^3.4.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "strip-json-comments-cli": "^1.0.1"
   },
   "peerDependencies": {
