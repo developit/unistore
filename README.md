@@ -8,7 +8,7 @@
 
 > A tiny ~650b centralized state container with component bindings for [Preact] & [React].
 
-- **Small** footprint compliments Preact nicely
+- **Small** footprint complements Preact nicely
 - **Familiar** names and ideas from Redux-like libraries
 - **Useful** data selectors to extract properties from state
 - **Portable** actions can be moved into a common place and imported
