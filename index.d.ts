@@ -17,7 +17,7 @@ export interface Store<K> {
 	getState(): K;
 }
 
-export function createStore<K>(state?: K): Store<K>;
+export default function createStore<K>(state?: K): Store<K>;
 
 export type ActionFn<K> = (state: K) => object;
 
