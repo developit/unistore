@@ -117,6 +117,20 @@ export default () => (
 )
 ```
 
+### Debug
+
+Make sure to have [Redux devtools extension](https://github.com/zalmoxisus/redux-devtools-extension) previously installed.
+
+```js
+import createStore from 'unistore'
+import devtools    from 'unistore/devtools'
+
+let initialState = { count: 0 };
+let store = process.env.NODE_ENV === 'production' ?  createStore(initialState) : devtools(createStore(initialState));
+
+// ...
+```
+
 ### Examples
 
 [README Example on CodeSandbox](https://codesandbox.io/s/l7y7w5qkz9)

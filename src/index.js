@@ -27,10 +27,10 @@ export default function createStore(state) {
 		listeners = out;
 	}
 
-	function setState(update, overwrite) {
+	function setState(update, overwrite, action) {
 		state = overwrite ? update : assign(assign({}, state), update);
 		let currentListeners = listeners;
-		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state);
+		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, action);
 	}
 
 	/** An observable state container, returned from {@link createStore}
@@ -46,18 +46,22 @@ export default function createStore(state) {
 		 *  @returns {Function} boundAction()
 		 */
 		action(action) {
+			function apply(result) {
+				setState(result, false, action);
+			}
+
 			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500
 			return function() {
 				let args = [state];
 				for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
 				let ret = action.apply(this, args);
 				if (ret!=null) {
-					if (ret.then) ret.then(setState);
-					else setState(ret);
+					if (ret.then) ret.then(apply);
+					else apply(ret);
 				}
 			};
 		},
-		
+
 		/** Apply a partial state object to the current state, invoking registered listeners.
 		 *  @param {Object} update				An object with properties to be merged into state
 		 *  @param {Boolean} [overwrite=false]	If `true`, update will replace state instead of being merged into it
