@@ -59,6 +59,7 @@ export default function createStore(state) {
 					if (ret.then) ret.then(apply);
 					else apply(ret);
 				}
+				return ret;
 			};
 		},
 

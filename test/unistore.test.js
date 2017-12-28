@@ -98,6 +98,15 @@ describe('createStore()', () => {
 		expect(sub2).not.toBeCalled();
 		expect(sub3).not.toBeCalled();
 	});
+
+	it('should return action value', () => {
+		const store = createStore();
+		const syncAction = () => ({ a: 'b' });
+		const asyncAction = () => new Promise(resolve => resolve({ c: 'd' }));
+		expect(store.action(syncAction)()).toEqual({ a: 'b' });
+		expect(store.action(asyncAction)()).toEqual(expect.any(Promise));
+		expect(store.action(asyncAction)()).resolves.toEqual({ c: 'd' });
+	});
 });
 
 describe('<Provider>', () => {
@@ -122,6 +131,15 @@ describe('connect()', () => {
 		render(<Provider store={store}><ConnectedChild /></Provider>, document.body);
 		expect(Child).toHaveBeenCalledWith({ a: 'b', store, children: expect.anything() }, expect.anything());
 		expect(store.subscribe).toBeCalled();
+	});
+
+	it('should pass actions as props', () => {
+		const store = createStore();
+		const actions = { someAction: () => ({ a: 'b' }) };
+		const Child = jest.fn();
+		const ConnectedChild = connect(Object, actions)(Child);
+		render(<Provider store={store}><ConnectedChild /></Provider>, document.body);
+		expect(Child).toHaveBeenCalledWith({ someAction: expect.any(Function), children: expect.anything() }, expect.anything());
 	});
 
 	it('should transform string selector', () => {
