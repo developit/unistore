@@ -56,7 +56,7 @@ describe('build: default', () => {
 			);
 			const mountedProvider = mount(provider);
 			expect(store.getState()).toEqual({ count: 0 });
-			const button = mountedProvider.find('#some_button').click();
+			const button = mountedProvider.find('#some_button').simulate('click'); //.click();
 			expect(store.getState()).toEqual({ count: 1 });
 			setTimeout(() => {
 				expect(store.getState()).toEqual({ count: 2 });

@@ -19,40 +19,53 @@ const CONTEXT_TYPES = {
  *    export class Foo { render({ foo, bar }) { } }
  */
 export function connect(mapStateToProps, actions) {
-	if (typeof mapStateToProps!=='function') {
+	if (typeof mapStateToProps !== 'function') {
 		mapStateToProps = select(mapStateToProps || []);
 	}
 	return Child => {
-		function Wrapper(props, context) {
-			Component.call(this, props, context);
-			let { store } = context;
-			let state = mapStateToProps(store ? store.getState() : {}, props);
-			let boundActions = actions ? mapActions(actions, store) : { store };
-			let update = () => {
-				let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
-				for (let i in mapped) if (mapped[i]!==state[i]) {
-					state = mapped;
-					return this.forceUpdate();
-				}
-				for (let i in state) if (!(i in mapped)) {
-					state = mapped;
-					return this.forceUpdate();
-				}
-			};
-			this.componentDidMount = () => {
-				update();
-				store.subscribe(update);
-			};
-			this.componentWillUnmount = () => {
-				store.unsubscribe(update);
-			};
-			this.render = () => createElement(Child, assign(assign(assign({}, boundActions), this.props), state));
+		class Wrapper extends Component {
+			constructor(props, context) {
+				super(props, context);
+				const { store } = context;
+				this.state = mapStateToProps(store ? store.getState() : {}, props);
+				this.boundActions = actions ? mapActions(actions, store) : { store };
+				this.update = () => {
+					let mapped = mapStateToProps(store ? store.getState() : {}, props);
+					for (let i in mapped) {
+						if (mapped[i] !== this.state[i]) {
+							this.setState(mapped);
+						}
+					}
+					for (let i in this.state) {
+						if (!(i in mapped)) {
+							this.setState(mapped);
+						}
+					}
+				};
+			}
+
+			componentDidMount() {
+				const { store } = this.context;
+				this.update();
+				store.subscribe(this.update);
+			}
+
+			componentWillUnmount() {
+				const { store } = this.context;
+				store.unsubscribe(this.update);
+			}
+
+			render() {
+				return createElement(
+					Child,
+					assign(assign(assign({}, this.boundActions), this.props), this.state)
+				);
+			}
 		}
 		Wrapper.contextTypes = CONTEXT_TYPES;
-		return (Wrapper.prototype = Object.create(Component)).constructor = Wrapper;
+		return Wrapper;
 	};
 }
-
 
 /** Provider exposes a store (passed as `props.store`) into context.
  *
