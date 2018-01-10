@@ -22,7 +22,6 @@ describe('createStore()', () => {
 			unsubscribe: expect.any(Function)
 		});
 	});
-
 	it('should update state in-place', () => {
 		let store = createStore();
 		expect(store.getState()).toMatchObject({});
@@ -37,69 +36,50 @@ describe('createStore()', () => {
 		store.setState({ c: undefined });
 		expect(store.getState()).toMatchObject({ a: 'x', c: undefined });
 	});
-
 	it('should invoke subscriptions', () => {
 		let store = createStore();
-
 		let sub1 = jest.fn();
 		let sub2 = jest.fn();
-
 		let rval = store.subscribe(sub1);
 		expect(rval).toBeInstanceOf(Function);
-
 		store.setState({ a: 'b' });
 		expect(sub1).toBeCalledWith(store.getState());
-
 		store.subscribe(sub2);
 		store.setState({ c: 'd' });
-
 		expect(sub1).toHaveBeenCalledTimes(2);
 		expect(sub1).toHaveBeenLastCalledWith(store.getState());
 		expect(sub2).toBeCalledWith(store.getState());
 	});
-
 	it('should unsubscribe', () => {
 		let store = createStore();
-
 		let sub1 = jest.fn();
 		let sub2 = jest.fn();
 		let sub3 = jest.fn();
-
 		store.subscribe(sub1);
 		store.subscribe(sub2);
 		let unsub3 = store.subscribe(sub3);
-
 		store.setState({ a: 'b' });
 		expect(sub1).toBeCalled();
 		expect(sub2).toBeCalled();
 		expect(sub3).toBeCalled();
-
 		sub1.mockReset();
 		sub2.mockReset();
 		sub3.mockReset();
-
 		store.unsubscribe(sub2);
-
 		store.setState({ c: 'd' });
 		expect(sub1).toBeCalled();
 		expect(sub2).not.toBeCalled();
 		expect(sub3).toBeCalled();
-
 		sub1.mockReset();
 		sub2.mockReset();
 		sub3.mockReset();
-
 		store.unsubscribe(sub1);
-
 		store.setState({ e: 'f' });
 		expect(sub1).not.toBeCalled();
 		expect(sub2).not.toBeCalled();
 		expect(sub3).toBeCalled();
-
 		sub3.mockReset();
-
 		unsub3();
-
 		store.setState({ g: 'h' });
 		expect(sub1).not.toBeCalled();
 		expect(sub2).not.toBeCalled();
@@ -180,6 +160,7 @@ describe('<Provider>', () => {
 		const store = createStore();
 		jest.spyOn(store, 'subscribe');
 		jest.spyOn(store, 'unsubscribe');
+
 		const ConnectedChild = connect(Object)(Child);
 
 		expect(store.subscribe).not.toHaveBeenCalled();
@@ -190,6 +171,21 @@ describe('<Provider>', () => {
 		);
 
 		expect(store.subscribe).toBeCalledWith(expect.any(Function));
+
+		let child = mountedProvider
+			.find('Child')
+			.first()
+			.instance();
+		expect(child.props).toEqual({ store });
+
+		store.setState({ a: 'b' });
+		await sleep(1);
+
+		child = mountedProvider
+			.find('Child')
+			.first()
+			.instance();
+		expect(child.props).toEqual({ a: 'b', store });
 
 		expect(store.unsubscribe).not.toHaveBeenCalled();
 		mountedProvider.unmount();
