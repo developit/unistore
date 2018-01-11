@@ -6,7 +6,7 @@ module.exports = function unistoreDevTools(store) {
 		console.warn('Please install/enable Redux devtools extension');
 		store.devtools = null;
 
-		return;
+		return store;
 	}
 
 	if (!store.devtools) {
