@@ -68,6 +68,8 @@
     "react.js",
     "react.js.map",
     "index.d.ts",
+    "preact.d.ts",
+    "react.d.ts",
     "devtools.js"
   ],
   "keywords": [

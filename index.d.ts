@@ -6,7 +6,7 @@ import * as Preact from "preact";
 
 export type Listener<K> = (state: K, action?: Action<K>) => void;
 export type Unsubscribe = () => void;
-export type Action<K> = (state: K, ...args) => void;
+export type Action<K> = (state: K, ...args: any[]) => void;
 export type BoundAction = () => void;
 
 export interface Store<K> {
@@ -17,7 +17,7 @@ export interface Store<K> {
 	getState(): K;
 }
 
-export function createStore<K>(state?: K): Store<K>;
+export default function createStore<K>(state?: K): Store<K>;
 
 export type ActionFn<K> = (state: K) => object;
 
@@ -28,17 +28,3 @@ export interface ActionMap<K> {
 export type ActionCreator<K> = (store: Store<K>) => ActionMap<K>;
 
 export type StateMapper<T, K, I> = (state: K, props: T) => I;
-
-// TODO: Child should not be `any`.
-export function connect<T, S, K, I>(
-	mapStateToProps: string | Array<string> | StateMapper<T, K, I>,
-	actions?: ActionCreator<K> | object
-): (Child: any) => Preact.ComponentConstructor<T, S>;
-
-export interface ProviderProps<T> {
-	store: Store<T>;
-}
-
-export class Provider<T> extends Preact.Component<ProviderProps<T>, {}> {
-	render(props: ProviderProps<T>, { }): Preact.VNode;
-}
