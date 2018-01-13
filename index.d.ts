@@ -2,7 +2,6 @@
 // S - Wrapped component state
 // K - Store state
 // I - Injected props to wrapped component
-import * as Preact from "preact";
 
 export type Listener<K> = (state: K, action?: Action<K>) => void;
 export type Unsubscribe = () => void;
