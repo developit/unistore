@@ -147,8 +147,7 @@ If not, just open a [new clear and descriptive issue](../../issues/new).
 
 ### License
 
-[MIT License](LICENSE.md) © [Jason Miller](https://jasonformat.com/)
+[MIT License](https://oss.ninja/mit/developit) © [Jason Miller](https://jasonformat.com)
 
 [preact]: https://github.com/developit/preact
-
 [react]: https://github.com/facebook/react
