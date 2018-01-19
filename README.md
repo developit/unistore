@@ -13,6 +13,7 @@
 - **Useful** data selectors to extract properties from state
 - **Portable** actions can be moved into a common place and imported
 - **Functional** actions are just reducers
+- **NEW**: seamlessly run Unistore in a worker via [Stockroom](https://github.com/developit/stockroom)
 
 ## Table of Contents
 
