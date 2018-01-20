@@ -69,10 +69,10 @@ You can find the library on `window.unistore`.
 import createStore from 'unistore'
 import { Provider, connect } from 'unistore/preact'
 
-let store = createStore({ count: 0 })
+const store = createStore({ count: 0 })
 
 // If actions is a function, it gets passed the store:
-let actions = store => ({
+const actions = store => ({
   // Actions can just return a state update:
   increment(state) {
     return { count: state.count+1 }
@@ -90,7 +90,7 @@ let actions = store => ({
 
   // Async actions can be pure async/promise functions:
   async getStuff(state) {
-    let res = await fetch('/foo.json')
+    const res = await fetch('/foo.json')
     return { stuff: await res.json() }
   },
 
@@ -126,8 +126,8 @@ Make sure to have [Redux devtools extension](https://github.com/zalmoxisus/redux
 import createStore from 'unistore'
 import devtools    from 'unistore/devtools'
 
-let initialState = { count: 0 };
-let store = process.env.NODE_ENV === 'production' ?  createStore(initialState) : devtools(createStore(initialState));
+const initialState = { count: 0 };
+const store = process.env.NODE_ENV === 'production' ?  createStore(initialState) : devtools(createStore(initialState));
 
 // ...
 ```

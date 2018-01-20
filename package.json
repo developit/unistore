@@ -10,12 +10,13 @@
   "scripts": {
     "build": "npm-run-all --silent -p build:main build:integrations build:combined -s size docs",
     "build:main": "microbundle",
-    "build:integrations": "microbundle src/integrations/*.js -o x.js -f cjs",
-    "build:combined": "microbundle src/combined/*.js -o full/x.js",
+    "build:integrations": "microbundle \"src/integrations/*.js\" -o x.js -f cjs",
+    "build:combined": "microbundle \"src/combined/*.js\" -o full/x.js",
     "size": "strip-json-comments --no-whitespace dist/unistore.js | gzip-size && bundlesize",
     "docs": "documentation readme unistore.js -q --section API && npm run -s fixreadme",
     "fixreadme": "node -e 'var fs=require(\"fs\");fs.writeFileSync(\"README.md\", fs.readFileSync(\"README.md\", \"utf8\").replace(/^-   /gm, \"- \"))'",
     "test": "eslint src && npm run build && jest",
+    "test:jest": "jest",
     "prepare": "npm t",
     "release": "npm t && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
@@ -28,15 +29,15 @@
   "bundlesize": [
     {
       "path": "full/preact.js",
-      "maxSize": "750b"
+      "maxSize": "730b"
     },
     {
       "path": "dist/unistore.js",
-      "maxSize": "400b"
+      "maxSize": "351b"
     },
     {
       "path": "preact.js",
-      "maxSize": "600b"
+      "maxSize": "523b"
     }
   ],
   "babel": {

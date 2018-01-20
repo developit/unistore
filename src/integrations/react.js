@@ -27,9 +27,9 @@ export function connect(mapStateToProps, actions) {
 			Component.call(this, props, context);
 			let { store } = context;
 			let state = mapStateToProps(store ? store.getState() : {}, props);
-			let boundActions = actions ? mapActions(actions, store) : { store };
-			let update = () => {
-				let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
+			const boundActions = actions ? mapActions(actions, store) : { store };
+			const update = () => {
+				const mapped = mapStateToProps(store ? store.getState() : {}, this.props);
 				for (let i in mapped) if (mapped[i]!==state[i]) {
 					state = mapped;
 					return this.forceUpdate();
