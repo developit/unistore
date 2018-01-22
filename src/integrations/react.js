@@ -49,7 +49,7 @@ export function connect(mapStateToProps, actions) {
 			this.render = () => createElement(Child, assign(assign(assign({}, boundActions), this.props), state));
 		}
 		Wrapper.contextTypes = CONTEXT_TYPES;
-		return (Wrapper.prototype = Object.create(Component)).constructor = Wrapper;
+		return (Wrapper.prototype = Object.create(Component.prototype)).constructor = Wrapper;
 	};
 }
 
