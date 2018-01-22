@@ -21,7 +21,11 @@ module.exports = function unistoreDevTools(store) {
 		store.subscribe(function (state, action) {
 			var actionName = action && action.name || 'setState';
 
-			if (!ignoreState) store.devtools.send(actionName, state);
+			if (!ignoreState) {
+				store.devtools.send(actionName, state);
+			} else {
+				ignoreState = false;
+			}
 		});
 	}
 
