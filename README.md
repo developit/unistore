@@ -150,4 +150,5 @@ If not, just open a [new clear and descriptive issue](../../issues/new).
 [MIT License](https://oss.ninja/mit/developit) © [Jason Miller](https://jasonformat.com)
 
 [preact]: https://github.com/developit/preact
+
 [react]: https://github.com/facebook/react
