@@ -15,7 +15,7 @@ import { assign, mapActions, select } from '../util';
  *    export class Foo { render({ foo, bar }) { } }
  */
 export function connect(mapStateToProps, actions) {
-	if (typeof mapStateToProps!=='function') {
+	if (typeof mapStateToProps !== 'function') {
 		mapStateToProps = select(mapStateToProps || []);
 	}
 	return Child => {
@@ -24,7 +24,7 @@ export function connect(mapStateToProps, actions) {
 			let boundActions = actions ? mapActions(actions, store) : { store };
 			let update = () => {
 				let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
-				for (let i in mapped) if (mapped[i]!==state[i]) {
+				for (let i in mapped) if (mapped[i] !== state[i]) {
 					state = mapped;
 					return this.setState(null);
 				}

@@ -16,8 +16,8 @@ export default function createStore(state) {
 
 	function unsubscribe(listener) {
 		let out = [];
-		for (let i=0; i<listeners.length; i++) {
-			if (listeners[i]===listener) {
+		for (let i = 0; i < listeners.length; i++) {
+			if (listeners[i] === listener) {
 				listener = null;
 			}
 			else {
@@ -30,7 +30,7 @@ export default function createStore(state) {
 	function setState(update, overwrite, action) {
 		state = overwrite ? update : assign(assign({}, state), update);
 		let currentListeners = listeners;
-		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, action);
+		for (let i = 0; i < currentListeners.length; i++) currentListeners[i](state, action);
 	}
 
 	/** An observable state container, returned from {@link createStore}
@@ -51,11 +51,11 @@ export default function createStore(state) {
 			}
 
 			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500
-			return function() {
+			return function () {
 				let args = [state];
-				for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
+				for (let i = 0; i < arguments.length; i++) args.push(arguments[i]);
 				let ret = action.apply(this, args);
-				if (ret!=null) {
+				if (ret != null) {
 					if (ret.then) ret.then(apply);
 					else apply(ret);
 				}

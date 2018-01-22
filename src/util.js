@@ -1,6 +1,6 @@
 // Bind an object/factory of actions to the store and wrap them.
 export function mapActions(actions, store) {
-	if (typeof actions==='function') actions = actions(store);
+	if (typeof actions === 'function') actions = actions(store);
 	let mapped = {};
 	for (let i in actions) {
 		mapped[i] = store.action(actions[i]);
@@ -11,10 +11,10 @@ export function mapActions(actions, store) {
 
 // select('foo,bar') creates a function of the form: ({ foo, bar }) => ({ foo, bar })
 export function select(properties) {
-	if (typeof properties==='string') properties = properties.split(/\s*,\s*/);
+	if (typeof properties === 'string') properties = properties.split(/\s*,\s*/);
 	return state => {
 		let selected = {};
-		for (let i=0; i<properties.length; i++) {
+		for (let i = 0; i < properties.length; i++) {
 			selected[properties[i]] = state[properties[i]];
 		}
 		return selected;

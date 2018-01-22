@@ -2,7 +2,7 @@ import { createElement, Children, Component } from 'react';
 import { assign, mapActions, select } from '../util';
 
 const CONTEXT_TYPES = {
-	store: () => {}
+	store: () => { }
 };
 
 /** Wire a component up to the store. Passes state as props, re-renders on change.
@@ -19,7 +19,7 @@ const CONTEXT_TYPES = {
  *    export class Foo { render({ foo, bar }) { } }
  */
 export function connect(mapStateToProps, actions) {
-	if (typeof mapStateToProps!=='function') {
+	if (typeof mapStateToProps !== 'function') {
 		mapStateToProps = select(mapStateToProps || []);
 	}
 	return Child => {
@@ -30,7 +30,7 @@ export function connect(mapStateToProps, actions) {
 			let boundActions = actions ? mapActions(actions, store) : { store };
 			let update = () => {
 				let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
-				for (let i in mapped) if (mapped[i]!==state[i]) {
+				for (let i in mapped) if (mapped[i] !== state[i]) {
 					state = mapped;
 					return this.forceUpdate();
 				}
