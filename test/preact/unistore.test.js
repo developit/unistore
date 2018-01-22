@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
-import createStore from '../src';
-import { Provider, connect } from '../src/integrations/preact';
+import createStore from '../../src';
+import { Provider, connect } from '../../src/integrations/preact';
 
 const sleep = ms => new Promise( r => setTimeout(r, ms) );
 
@@ -35,7 +35,7 @@ describe('createStore()', () => {
 
 		let sub1 = jest.fn();
 		let sub2 = jest.fn();
-		let action = undefined;
+		let action;
 
 		let rval = store.subscribe(sub1);
 		expect(rval).toBeInstanceOf(Function);
@@ -104,11 +104,21 @@ describe('<Provider>', () => {
 	it('should provide props into context', () => {
 		const Child = jest.fn();
 
-		render(<Provider store="a"><Child /></Provider>, document.body);
+		render(
+			<Provider store="a">
+				<Child />
+			</Provider>,
+			document.body
+		);
 		expect(Child).toHaveBeenCalledWith(expect.anything(), { store: 'a' });
 
 		let store = { name: 'obj' };
-		render(<Provider store={store}><Child /></Provider>, document.body);
+		render(
+			<Provider store={store}>
+				<Child />
+			</Provider>,
+			document.body
+		);
 		expect(Child).toHaveBeenCalledWith(expect.anything(), { store });
 	});
 });
@@ -119,8 +129,16 @@ describe('connect()', () => {
 		const store = { subscribe: jest.fn(), getState: () => state };
 		const Child = jest.fn();
 		const ConnectedChild = connect(Object)(Child);
-		render(<Provider store={store}><ConnectedChild /></Provider>, document.body);
-		expect(Child).toHaveBeenCalledWith({ a: 'b', store, children: expect.anything() }, expect.anything());
+		render(
+			<Provider store={store}>
+				<ConnectedChild />
+			</Provider>,
+			document.body
+		);
+		expect(Child).toHaveBeenCalledWith(
+			{ a: 'b', store, children: expect.anything() },
+			expect.anything()
+		);
 		expect(store.subscribe).toBeCalled();
 	});
 
@@ -129,8 +147,16 @@ describe('connect()', () => {
 		const store = { subscribe: jest.fn(), getState: () => state };
 		const Child = jest.fn();
 		const ConnectedChild = connect('a, b')(Child);
-		render(<Provider store={store}><ConnectedChild /></Provider>, document.body);
-		expect(Child).toHaveBeenCalledWith({ a: 'b', b: 'c', store, children: expect.anything() }, expect.anything());
+		render(
+			<Provider store={store}>
+				<ConnectedChild />
+			</Provider>,
+			document.body
+		);
+		expect(Child).toHaveBeenCalledWith(
+			{ a: 'b', b: 'c', store, children: expect.anything() },
+			expect.anything()
+		);
 		expect(store.subscribe).toBeCalled();
 	});
 
@@ -141,16 +167,27 @@ describe('connect()', () => {
 		jest.spyOn(store, 'unsubscribe');
 		const ConnectedChild = connect(Object)(Child);
 
-		let root = render(<Provider store={store}><ConnectedChild /></Provider>, document.body);
+		let root = render(
+			<Provider store={store}>
+				<ConnectedChild />
+			</Provider>,
+			document.body
+		);
 
 		expect(store.subscribe).toBeCalledWith(expect.any(Function));
-		expect(Child).toHaveBeenCalledWith({ store, children: expect.anything() }, expect.anything());
+		expect(Child).toHaveBeenCalledWith(
+			{ store, children: expect.anything() },
+			expect.anything()
+		);
 
 		Child.mockReset();
 
 		store.setState({ a: 'b' });
 		await sleep(1);
-		expect(Child).toHaveBeenCalledWith({ a: 'b', store, children: expect.anything() }, expect.anything());
+		expect(Child).toHaveBeenCalledWith(
+			{ a: 'b', store, children: expect.anything() },
+			expect.anything()
+		);
 
 		render(null, document.body, root);
 		expect(store.unsubscribe).toBeCalled();
