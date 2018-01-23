@@ -57,7 +57,7 @@ export default function createStore(state) {
 				let ret = action.apply(this, args);
 				if (ret!=null) {
 					if (ret.then) return ret.then(apply);
-					else return apply(ret);
+					return apply(ret);
 				}
 			};
 		},
