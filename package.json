@@ -91,7 +91,7 @@
     "eslint-config-developit": "^1.1.1",
     "gzip-size-cli": "^2.1.0",
     "jest": "^22.1.4",
-    "microbundle": "^0.3.1",
+    "microbundle": "^0.4.3",
     "npm-run-all": "^4.1.2",
     "preact": "^8.2.7",
     "raf": "^3.4.0",
