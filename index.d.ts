@@ -6,7 +6,7 @@ import * as Preact from "preact";
 
 export type Listener<K> = (state: K, action?: Action<K>) => void;
 export type Unsubscribe = () => void;
-export type Action<K> = (state: K, ...args) => void;
+export type Action<K> = (state: K, ...args: any[]) => void;
 export type BoundAction = () => void;
 
 export interface Store<K> {
