@@ -1,5 +1,5 @@
 module.exports = function unistoreDevTools(store) {
-	var extension = window.devToolsExtension || window.top.devToolsExtension;
+	var extension = window.__REDUX_DEVTOOLS_EXTENSION__ || window.top.__REDUX_DEVTOOLS_EXTENSION__;
 	var ignoreState = false;
 
 	if (!extension) {
