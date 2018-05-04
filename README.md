@@ -152,9 +152,9 @@ Creates a new store, which is a tiny evented state container.
 
 ```javascript
 let store = createStore();
-   store.subscribe( state => console.log(state) );
-   store.setState({ a: 'b' });   // logs { a: 'b' }
-   store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
+store.subscribe( state => console.log(state) );
+store.setState({ a: 'b' });   // logs { a: 'b' }
+store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
 ```
 
 Returns **[store](#store)** 
@@ -166,8 +166,8 @@ An observable state container, returned from [createStore](#createstore)
 ##### action
 
 Create a bound copy of the given action function.
- The bound returned function invokes action() and persists the result back to the store.
- If the return value of `action` is a Promise, the resolved value will be used as state.
+The bound returned function invokes action() and persists the result back to the store.
+If the return value of `action` is a Promise, the resolved value will be used as state.
 
 **Parameters**
 
@@ -207,6 +207,41 @@ Remove a previously-registered listener function.
 Retrieve the current state object.
 
 Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** state
+
+#### connect
+
+Wire a component up to the store. Passes state as props, re-renders on change.
+
+**Parameters**
+
+- `mapStateToProps` **([Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) \| [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** A function mapping of store state to prop values, or an array/CSV of properties to map.
+- `actions` **([Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) \| [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object))?** Action functions (pure state mappings), or a factory returning them. Every action function gets current state as the first parameter and any other params next
+
+**Examples**
+
+```javascript
+const Foo = connect('foo,bar')( ({ foo, bar }) => <div /> )
+```
+
+```javascript
+const actions = { someAction }
+const Foo = connect('foo,bar', actions)( ({ foo, bar, someAction }) => <div /> )
+```
+
+Returns **Component** ConnectedComponent
+
+#### Provider
+
+**Extends Component**
+
+Provider exposes a store (passed as `props.store`) into context.
+
+Generally, an entire application is wrapped in a single `<Provider>` at the root.
+
+**Parameters**
+
+- `props` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+    -   `props.store` **Store** A {Store} instance to expose via context.
 
 ### Reporting Issues
 
