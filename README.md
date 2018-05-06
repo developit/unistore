@@ -54,11 +54,11 @@ The [UMD](https://github.com/umdjs/umd) build is also available on [unpkg](https
 
 ```html
 <!-- just unistore(): -->
-<script src="//unpkg.com/unistore/dist/unistore.umd.js"></script>
+<script src="https://unpkg.com/unistore/dist/unistore.umd.js"></script>
 <!-- for preact -->
-<script src="//unpkg.com/unistore/full/preact.umd.js"></script>
+<script src="https://unpkg.com/unistore/full/preact.umd.js"></script>
 <!-- for react -->
-<script src="//unpkg.com/unistore/full/react.umd.js"></script>
+<script src="https://unpkg.com/unistore/full/react.umd.js"></script>
 ```
 
 You can find the library on `window.unistore`.
