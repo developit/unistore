@@ -2,7 +2,6 @@
 // S - Wrapped component state
 // K - Store state
 // I - Injected props to wrapped component
-import * as Preact from "preact";
 
 export type Listener<K> = (state: K, action?: Action<K>) => void;
 export type Unsubscribe = () => void;
@@ -28,17 +27,3 @@ export interface ActionMap<K> {
 export type ActionCreator<K> = (store: Store<K>) => ActionMap<K>;
 
 export type StateMapper<T, K, I> = (state: K, props: T) => I;
-
-// TODO: Child should not be `any`.
-export function connect<T, S, K, I>(
-	mapStateToProps: string | Array<string> | StateMapper<T, K, I>,
-	actions?: ActionCreator<K> | object
-): (Child: any) => Preact.ComponentConstructor<T, S>;
-
-export interface ProviderProps<T> {
-	store: Store<T>;
-}
-
-export class Provider<T> extends Preact.Component<ProviderProps<T>, {}> {
-	render(props: ProviderProps<T>, { }): Preact.VNode;
-}
