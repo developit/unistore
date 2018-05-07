@@ -14,9 +14,7 @@ export function select(properties) {
 	if (typeof properties==='string') properties = properties.split(/\s*,\s*/);
 	return state => {
 		let selected = {};
-		for (let i=0; i<properties.length; i++) {
-			selected[properties[i]] = state[properties[i]];
-		}
+		properties.forEach(prop => selected[prop] = state[prop]);
 		return selected;
 	};
 }

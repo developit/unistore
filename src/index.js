@@ -15,22 +15,12 @@ export default function createStore(state) {
 	state = state || {};
 
 	function unsubscribe(listener) {
-		let out = [];
-		for (let i=0; i<listeners.length; i++) {
-			if (listeners[i]===listener) {
-				listener = null;
-			}
-			else {
-				out.push(listeners[i]);
-			}
-		}
-		listeners = out;
+		listeners = listeners.filter(each => each !== listener);
 	}
 
 	function setState(update, overwrite, action) {
 		state = overwrite ? update : assign(assign({}, state), update);
-		let currentListeners = listeners;
-		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, action);
+		listeners.forEach(cur => cur(state, action));
 	}
 
 	/** An observable state container, returned from {@link createStore}
@@ -52,8 +42,8 @@ export default function createStore(state) {
 
 			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500
 			return function() {
-				let args = [state];
-				for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
+				let args = Array.prototype.slice.call(arguments);
+				args.unshift(state);
 				let ret = action.apply(this, args);
 				if (ret!=null) {
 					if (ret.then) ret.then(apply);
