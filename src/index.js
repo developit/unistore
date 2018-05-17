@@ -15,7 +15,7 @@ export default function createStore(state) {
 	state = state || {};
 
 	function unsubscribe(listener) {
-		listeners = listeners.filter(each => each !== listener);
+		listeners = listeners.filter(each => each === listener ? (listener = null && false) : true);
 	}
 
 	function setState(update, overwrite, action) {
