@@ -97,7 +97,7 @@ let actions = store => ({
   // ... or just actions that call store.setState() later:
   incrementAsync(state) {
     setTimeout( () => {
-      store.setState({ count: state.count+1 })
+      store.setState({ count: store.getState().count+1 })
     }, 100)
   }
 })
