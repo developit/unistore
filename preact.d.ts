@@ -1,3 +1,4 @@
+// TypeScript Version: 2.2
 // T - Wrapped component props
 // S - Wrapped component state
 // K - Store state
