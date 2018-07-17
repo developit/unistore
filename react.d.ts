@@ -16,7 +16,7 @@ declare module "unistore/react" {
 		store: Store<T>;
 	}
 
-	export class Provider<T> extends Component<ProviderProps<T>, {}> {
+	export class Provider<T> extends React.Component<ProviderProps<T>, {}> {
 		render(): React.ReactNode;
 	}
 }
