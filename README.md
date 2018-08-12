@@ -153,7 +153,7 @@ store.setState({ a: 'b' });   // logs { a: 'b' }
 store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
 ```
 
-Returns **[store](#store)**
+Returns **[store](#store)** 
 
 #### store
 
@@ -236,7 +236,7 @@ Generally, an entire application is wrapped in a single `<Provider>` at the root
 
 **Parameters**
 
-- `props` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
+- `props` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
     -   `props.store` **Store** A {Store} instance to expose via context.
 
 ### Reporting Issues
