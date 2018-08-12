@@ -41,7 +41,7 @@ export function connect(mapStateToProps, actions) {
 			this.componentWillUnmount = () => {
 				store.unsubscribe(update);
 			};
-			this.render = props => h(Child, assign(assign(assign({}, boundActions), props), state));
+			this.render = props => h(Child, assign(assign(assign({ ref: (child) => { this.child = child; } }, boundActions), props), state));
 		}
 		return (Wrapper.prototype = new Component()).constructor = Wrapper;
 	};
