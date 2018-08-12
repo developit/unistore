@@ -17,7 +17,7 @@
     "fixreadme": "node -e 'var fs=require(\"fs\");fs.writeFileSync(\"README.md\", fs.readFileSync(\"README.md\", \"utf8\").replace(/^-   /gm, \"- \"))'",
     "test": "eslint src && npm run build && jest",
     "prepare": "npm t",
-    "release": "npm t && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish --access=public"
+    "release": "npm t && git commit -am luke-$npm_package_version && git tag luke-$npm_package_version && git push && git push --tags && npm publish --access=public"
   },
   "eslintConfig": {
     "extends": "eslint-config-developit",
