@@ -1,10 +1,6 @@
-<p align="center">
-  <img src="https://i.imgur.com/o0u6dto.png" width="300" height="300" alt="unistore">
-  <br>
-  <a href="https://www.npmjs.org/package/unistore"><img src="https://img.shields.io/npm/v/unistore.svg?style=flat" alt="npm"></a> <a href="https://travis-ci.org/developit/unistore"><img src="https://travis-ci.org/developit/unistore.svg?branch=master" alt="travis"></a>
-</p>
+# unistore ... with modifications
 
-# unistore
+**NOTE**: This is a modified version of [Jason Miller's unistore package](https://github.com/developit/unistore). There have been a few improvements, but the vast majority of the code remains unchanged. These changes are awaiting approval, and I will abandon this repo once my changes are merged upstream.
 
 > A tiny ~650b centralized state container with component bindings for [Preact] & [React].
 
@@ -157,7 +153,7 @@ store.setState({ a: 'b' });   // logs { a: 'b' }
 store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
 ```
 
-Returns **[store](#store)** 
+Returns **[store](#store)**
 
 #### store
 
@@ -240,7 +236,7 @@ Generally, an entire application is wrapped in a single `<Provider>` at the root
 
 **Parameters**
 
-- `props` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+- `props` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
     -   `props.store` **Store** A {Store} instance to expose via context.
 
 ### Reporting Issues
@@ -249,6 +245,8 @@ Found a problem? Want a new feature? First of all, see if your issue or idea has
 If not, just open a [new clear and descriptive issue](../../issues/new).
 
 ### License
+
+[MIT License](https://oss.ninja/mit?organization=Luke%20Lindsey) © Luke Lindsey
 
 [MIT License](https://oss.ninja/mit/developit) © [Jason Miller](https://jasonformat.com)
 
