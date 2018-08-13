@@ -1,6 +1,6 @@
 {
   "name": "@lukelindsey/unistore",
-  "version": "3.0.6.1",
+  "version": "3.0.6-rc.1",
   "description": "Luke modified version of unistore package.",
   "source": "src/index.js",
   "module": "dist/unistore.es.js",
