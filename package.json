@@ -1,7 +1,7 @@
 {
-  "name": "unistore",
-  "version": "3.0.6",
-  "description": "Dead simple centralized state container (store) with preact and react bindings.",
+  "name": "@lukelindsey/unistore",
+  "version": "3.0.6-rc.1",
+  "description": "Luke modified version of unistore package.",
   "source": "src/index.js",
   "module": "dist/unistore.es.js",
   "main": "dist/unistore.js",
@@ -17,7 +17,7 @@
     "fixreadme": "node -e 'var fs=require(\"fs\");fs.writeFileSync(\"README.md\", fs.readFileSync(\"README.md\", \"utf8\").replace(/^-   /gm, \"- \"))'",
     "test": "eslint src && npm run build && jest",
     "prepare": "npm t",
-    "release": "npm t && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+    "release": "npm t && git tag luke-$npm_package_version && git push && git push --tags && npm publish --access=public"
   },
   "eslintConfig": {
     "extends": "eslint-config-developit",
@@ -28,7 +28,7 @@
   "bundlesize": [
     {
       "path": "full/preact.js",
-      "maxSize": "750b"
+      "maxSize": "760b"
     },
     {
       "path": "dist/unistore.js",
@@ -59,6 +59,9 @@
       ]
     ]
   },
+  "jest": {
+    "testURL": "http://localhost"
+  },
   "files": [
     "src",
     "dist",
@@ -78,8 +81,8 @@
     "state machine",
     "redux"
   ],
-  "repository": "developit/unistore",
-  "author": "Jason Miller <jason@developit.ca>",
+  "repository": "LukeLindsey/unistore",
+  "author": "Luke Lindsey <luke.lindsey.dev@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "babel-jest": "^21.2.0",
