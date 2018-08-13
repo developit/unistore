@@ -2,6 +2,8 @@
 
 **NOTE**: This is a modified version of [Jason Miller's unistore package](https://github.com/developit/unistore). There have been a few improvements, but the vast majority of the code remains unchanged. These changes are awaiting approval, and I will abandon this repo once my changes are merged upstream.
 
+-----------------------------------
+
 > A tiny ~650b centralized state container with component bindings for [Preact] & [React].
 
 - **Small** footprint complements Preact nicely
