@@ -60,6 +60,7 @@ export default function createStore(state) {
 				let ret = action.apply(this, args);
 				if (ret!=null) {
 					if (ret.then) return ret.then(apply);
+					if (typeof ret==='function') return ret(apply);
 					return apply(ret);
 				}
 			};
