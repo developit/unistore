@@ -1,29 +1,17 @@
-// T - Wrapped component props
-// S - Wrapped component state
-// K - Store state
-// I - Injected props to wrapped component
+declare module "unistore" {
+  export type Action<TStoreState, TArgs extends any[]> = (state: TStoreState, ...args: TArgs) => Partial<TStoreState>;
+  export type BoundAction<TArgs extends any[]> = (...args: TArgs) => void;
 
-export type Listener<K> = (state: K, action?: Action<K>) => void;
-export type Unsubscribe = () => void;
-export type Action<K> = (state: K, ...args: any[]) => void;
-export type BoundAction = () => void;
+  export type Listener<TStoreState, TArgs extends any[]> = (state: TStoreState, action?: Action<TStoreState, TArgs>) => void;
+  export type Unsubscribe = () => void;
 
-export interface Store<K> {
-	action(action: Action<K>): BoundAction;
-	setState(update: object, overwrite?: boolean, action?: Action<K>): void;
-	subscribe(f: Listener<K>): Unsubscribe;
-	unsubscribe(f: Listener<K>): void;
-	getState(): K;
+  export interface Store<TStoreState> {
+    action<TArgs extends any[]>(action: Action<TStoreState, TArgs>): BoundAction<TArgs>;
+
+    setState<TArgs extends any[]>(update: object, overwrite?: boolean, action?: Action<TStoreState, TArgs>): void;
+    subscribe<TArgs extends any[]>(func: Listener<TStoreState, TArgs>): Unsubscribe;
+    unsubscribe<TArgs extends any[]>(func: Listener<TStoreState, TArgs>): void;
+    getState(): TStoreState;
+  }
+  export default function createStore<TStoreState>(state?: TStoreState): Store<TStoreState>;
 }
-
-export default function createStore<K>(state?: K): Store<K>;
-
-export type ActionFn<K> = (state: K) => object;
-
-export interface ActionMap<K> {
-	[actionName: string]: ActionFn<K>;
-}
-
-export type ActionCreator<K> = (store: Store<K>) => ActionMap<K>;
-
-export type StateMapper<T, K, I> = (state: K, props: T) => I;
