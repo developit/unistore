@@ -5,7 +5,7 @@
 
 declare module "unistore/react" {
 	import * as React from "react";
-	import { Store, ActionAny } from "unistore";
+	import { Store } from "unistore";
 
 	// Diff / Omit taken from https://github.com/Microsoft/TypeScript/issues/12215#issuecomment-311923766
 	type Diff<T extends string, U extends string> = ({ [P in T]: P } & { [P in U]: never } & { [x: string]: never })[T];
@@ -26,7 +26,7 @@ declare module "unistore/react" {
 	type MapStateToPropsParam<TStoreState, TExternalProps, TStoreProps> = MapStateToProps<TStoreState, TExternalProps, TStoreProps> | null | undefined;
 
 	interface MapActionsToPropsFunction<TStoreState> {
-		[actionName: string]: ActionAny<TStoreState> | ActionAny<TStoreState>;
+		[actionName: string]: (state: TStoreState, ...args: any[]) => Partial<TStoreState>;
 	}
 	interface MapActionsToPropsFactory<TStoreState, TActionProps> {
 		<TActionProps>(store: Store<TStoreState>): TActionProps;
