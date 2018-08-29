@@ -10,7 +10,7 @@ export type BoundAction = () => void;
 
 export interface Store<K> {
 	action(action: Action<K>): BoundAction;
-	setState(update: object, overwrite?: boolean, action?: Action<K>): void;
+	setState<U extends keyof K>(update: Pick<K, U>, overwrite?: boolean, action?: Action<K>): void;
 	subscribe(f: Listener<K>): Unsubscribe;
 	unsubscribe(f: Listener<K>): void;
 	getState(): K;
