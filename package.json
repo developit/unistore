@@ -98,7 +98,7 @@
     "jest": "^22.1.4",
     "microbundle": "^0.4.3",
     "npm-run-all": "^4.1.2",
-    "preact": "^8.2.7",
+    "preact": "^8.3.1",
     "raf": "^3.4.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
