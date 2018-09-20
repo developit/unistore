@@ -59,6 +59,9 @@
       ]
     ]
   },
+  "jest": {
+    "testURL": "http://localhost"
+  },
   "files": [
     "src",
     "dist",
