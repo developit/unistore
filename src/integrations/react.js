@@ -1,9 +1,7 @@
-import { createElement, Children, Component } from 'react';
+import { createContext, createElement, Component } from 'react';
 import { assign, mapActions, select } from '../util';
 
-const CONTEXT_TYPES = {
-	store: () => {}
-};
+const UnistoreContext = createContext();
 
 /** Wire a component up to the store. Passes state as props, re-renders on change.
  *  @param {Function|Array|String} mapStateToProps  A function mapping of store state to prop values, or an array/CSV of properties to map.
@@ -22,34 +20,15 @@ export function connect(mapStateToProps, actions) {
 	if (typeof mapStateToProps!=='function') {
 		mapStateToProps = select(mapStateToProps || []);
 	}
-	return Child => {
-		function Wrapper(props, context) {
-			Component.call(this, props, context);
-			let { store } = context;
-			let state = mapStateToProps(store ? store.getState() : {}, props);
+	return Child => props => createElement(
+		UnistoreContext.Consumer,
+		null,
+		({ store, ...state }) => {
 			let boundActions = actions ? mapActions(actions, store) : { store };
-			let update = () => {
-				let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
-				for (let i in mapped) if (mapped[i]!==state[i]) {
-					state = mapped;
-					return this.forceUpdate();
-				}
-				for (let i in state) if (!(i in mapped)) {
-					state = mapped;
-					return this.forceUpdate();
-				}
-			};
-			this.componentDidMount = () => {
-				store.subscribe(update);
-			};
-			this.componentWillUnmount = () => {
-				store.unsubscribe(update);
-			};
-			this.render = () => createElement(Child, assign(assign(assign({}, boundActions), this.props), state));
+			let mappedState = mapStateToProps(state, props);
+			return createElement(Child, assign(assign(assign({}, boundActions), props), mappedState));
 		}
-		Wrapper.contextTypes = CONTEXT_TYPES;
-		return (Wrapper.prototype = Object.create(Component.prototype)).constructor = Wrapper;
-	};
+	);
 }
 
 
@@ -62,11 +41,27 @@ export function connect(mapStateToProps, actions) {
  *  @param {Store} props.store		A {Store} instance to expose via context.
  */
 export class Provider extends Component {
-	getChildContext() {
-		return { store: this.props.store };
+	constructor(props) {
+		super(props);
+		this.state = assign(assign({},
+			{ store: this.props.store }),
+		this.props.store.getState()
+		);
+
+		this.update = () => {
+			this.setState(this.props.store.getState());
+		};
 	}
+
+	componentDidMount() {
+		this.props.store.subscribe(this.update);
+	}
+
+	componentWillUnmount() {
+		this.props.store.unsubscribe(this.update);
+	}
+
 	render() {
-		return Children.only(this.props.children);
+		return createElement(UnistoreContext.Provider, { children: this.props.children, value: this.state });
 	}
 }
-Provider.childContextTypes = CONTEXT_TYPES;
