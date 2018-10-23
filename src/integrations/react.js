@@ -38,6 +38,7 @@ export function connect(mapStateToProps, actions) {
 					state = mapped;
 					return this.forceUpdate();
 				}
+		                return this.forceUpdate();
 			};
 			this.componentDidMount = () => {
 				store.subscribe(update);
