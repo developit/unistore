@@ -6,7 +6,7 @@
 export type Listener<K> = (state: K, action?: Action<K>) => void;
 export type Unsubscribe = () => void;
 export type Action<K> = (state: K, ...args: any[]) => void;
-export type BoundAction = () => void;
+export type BoundAction = (...args: any[]) => void;
 
 export interface Store<K> {
 	action(action: Action<K>): BoundAction;
