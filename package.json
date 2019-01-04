@@ -73,7 +73,8 @@
     "index.d.ts",
     "preact.d.ts",
     "react.d.ts",
-    "devtools.js"
+    "devtools.js",
+    "devtools.d.ts"
   ],
   "keywords": [
     "preact",
