@@ -39,6 +39,7 @@ export function connect(mapStateToProps, actions) {
 					return this.forceUpdate();
 				}
 			};
+			this.componentWillReceiveProps = update;
 			this.componentDidMount = () => {
 				store.subscribe(update);
 			};

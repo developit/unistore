@@ -198,4 +198,73 @@ describe('connect()', () => {
 		await sleep(1);
 		expect(Child).not.toHaveBeenCalled();
 	});
+
+	it('should run mapStateToProps and update when outer props change', () => {
+		let state = {};
+		const store = { subscribe: jest.fn(), getState: () => state };
+		const Child = jest.fn().mockName('<Child>');
+		let mappings = 0;
+
+		// Jest mock return values are broken :(
+		const mapStateToProps = jest.fn((state, props) => ({ mappings: ++mappings, ...props }));
+
+		// const mapper = jest.fn();
+		// const mapStateToProps = (state, props) => {
+		// 	mapper(state, props);
+		// 	mappings++;
+		// 	return { mappings, ...props };
+		// };
+
+		const ConnectedChild = connect(mapStateToProps)(Child);
+		let root = render(
+			<Provider store={store}>
+				<ConnectedChild />
+			</Provider>,
+			document.body
+		);
+
+		expect(mapStateToProps).toHaveBeenCalledTimes(1);
+		expect(mapStateToProps).toHaveBeenCalledWith({}, { children: expect.anything() });
+		// first render calls mapStateToProps
+		expect(Child).toHaveBeenCalledWith(
+			{ mappings: 1, store, children: expect.anything() },
+			expect.anything()
+		);
+
+		mapStateToProps.mockClear();
+		Child.mockClear();
+
+		render(
+			<Provider store={store}>
+				<ConnectedChild a="b" />
+			</Provider>,
+			document.body,
+			root
+		);
+
+		expect(mapStateToProps).toHaveBeenCalledTimes(1);
+		expect(mapStateToProps).toHaveBeenCalledWith({}, { children: expect.anything() });
+		// outer props were changed
+		expect(Child).toHaveBeenCalledWith(
+			{ mappings: 2, a: 'b', store, children: expect.anything() },
+			expect.anything()
+		);
+
+		mapStateToProps.mockClear();
+		Child.mockClear();
+
+		render(
+			<Provider store={store}>
+				<ConnectedChild a="b" />
+			</Provider>,
+			document.body,
+			root
+		);
+
+		// re-rendered, but outer props were not changed
+		expect(Child).toHaveBeenCalledWith(
+			{ mappings: 3, a: 'b', store, children: expect.anything() },
+			expect.anything()
+		);
+	});
 });
