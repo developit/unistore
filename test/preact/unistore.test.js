@@ -67,9 +67,9 @@ describe('createStore()', () => {
 		expect(sub2).toBeCalled();
 		expect(sub3).toBeCalled();
 
-		sub1.mockReset();
-		sub2.mockReset();
-		sub3.mockReset();
+		sub1.mockClear();
+		sub2.mockClear();
+		sub3.mockClear();
 
 		store.unsubscribe(sub2);
 
@@ -78,9 +78,9 @@ describe('createStore()', () => {
 		expect(sub2).not.toBeCalled();
 		expect(sub3).toBeCalled();
 
-		sub1.mockReset();
-		sub2.mockReset();
-		sub3.mockReset();
+		sub1.mockClear();
+		sub2.mockClear();
+		sub3.mockClear();
 
 		store.unsubscribe(sub1);
 
@@ -89,7 +89,7 @@ describe('createStore()', () => {
 		expect(sub2).not.toBeCalled();
 		expect(sub3).toBeCalled();
 
-		sub3.mockReset();
+		sub3.mockClear();
 
 		unsub3();
 
@@ -180,7 +180,7 @@ describe('connect()', () => {
 			expect.anything()
 		);
 
-		Child.mockReset();
+		Child.mockClear();
 
 		store.setState({ a: 'b' });
 		await sleep(1);
@@ -192,7 +192,7 @@ describe('connect()', () => {
 		render(null, document.body, root);
 		expect(store.unsubscribe).toBeCalled();
 
-		Child.mockReset();
+		Child.mockClear();
 
 		store.setState({ c: 'd' });
 		await sleep(1);
