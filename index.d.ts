@@ -18,7 +18,7 @@ export interface Store<K> {
 
 export default function createStore<K>(state?: K): Store<K>;
 
-export type ActionFn<K> = (state: K) => object;
+export type ActionFn<K> = (state: K, ...args: any[]) => object;
 
 export interface ActionMap<K> {
 	[actionName: string]: ActionFn<K>;
