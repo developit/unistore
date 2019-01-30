@@ -22,8 +22,8 @@ export function connect(mapStateToProps, actions) {
 	return Child => {
 		function Wrapper(props, { store }) {
 			let state = mapStateToProps(store ? store.getState() : {}, props);
-			let boundActions = actions ? mapActions(actions, store) : { store };
-			let update = () => {
+			const boundActions = actions ? mapActions(actions, store) : { store };
+			const update = () => {
 				let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
 				for (let i in mapped) if (mapped[i]!==state[i]) {
 					state = mapped;

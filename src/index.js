@@ -12,26 +12,18 @@ import { assign } from './util';
  * store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
  */
 export default function createStore(state) {
-	let listeners = [];
+	const listeners = [];
 	state = state || {};
 
 	function unsubscribe(listener) {
-		let out = [];
-		for (let i=0; i<listeners.length; i++) {
-			if (listeners[i]===listener) {
-				listener = null;
-			}
-			else {
-				out.push(listeners[i]);
-			}
-		}
-		listeners = out;
+		const i = listeners.lastIndexOf(listener);
+		~i && listeners.splice(i, 1);
 	}
 
 	function setState(update, overwrite, action) {
 		state = overwrite ? update : assign(assign({}, state), update);
-		let currentListeners = listeners;
-		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, action);
+		let i = listeners.length;
+		while (i-- > 0) listeners[i](state, action);
 	}
 
 	/**
@@ -49,15 +41,15 @@ export default function createStore(state) {
 		 * @returns {Function} boundAction()
 		 */
 		action(action) {
-			function apply(result) {
-				setState(result, false, action);
+			function apply(update) {
+				setState(update, false, action);
 			}
 
 			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500
 			return function() {
-				let args = [state];
-				for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
-				let ret = action.apply(this, args);
+				const args = [state];
+				for (let i = 0; i<arguments.length; i++) args.push(arguments[i]);
+				const ret = action.apply(this, args);
 				if (ret!=null) {
 					if (ret.then) return ret.then(apply);
 					return apply(ret);

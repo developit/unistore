@@ -51,6 +51,52 @@ describe('createStore()', () => {
 		expect(sub2).toBeCalledWith(store.getState(), action);
 	});
 
+	it('should invoke all subscriptions at time of setState, no matter unsubscriptions', () => {
+		let store = createStore();
+
+		let called = [];
+		let unsub2;
+
+		let sub1 = jest.fn(() => {
+			called.push(1);
+		});
+		let sub2 = jest.fn(() => {
+			called.push(2);
+			unsub2(); // unsubscribe during a listener callback
+		});
+		let sub3 = jest.fn(() => {
+			called.push(3);
+		});
+
+		let unsub1 = store.subscribe(sub1);
+		unsub2 = store.subscribe(sub2);
+		let unsub3 = store.subscribe(sub3);
+
+		store.setState({ a: 'a' });
+
+		expect(sub1).toHaveBeenCalledTimes(1);
+		expect(sub2).toHaveBeenCalledTimes(1);
+		expect(sub3).toHaveBeenCalledTimes(1);
+		expect(called.sort()).toEqual([1, 2, 3]);
+
+		store.setState({ a: 'b' });
+
+		expect(sub1).toHaveBeenCalledTimes(2);
+		expect(sub2).toHaveBeenCalledTimes(1);
+		expect(sub3).toHaveBeenCalledTimes(2);
+		expect(called.sort()).toEqual([1, 1, 2, 3, 3]);
+
+		unsub1();
+		unsub3();
+
+		store.setState({ a: 'c' });
+
+		expect(sub1).toHaveBeenCalledTimes(2);
+		expect(sub2).toHaveBeenCalledTimes(1);
+		expect(sub3).toHaveBeenCalledTimes(2);
+		expect(called.sort()).toEqual([1, 1, 2, 3, 3]);
+	});
+
 	it('should unsubscribe', () => {
 		let store = createStore();
 
