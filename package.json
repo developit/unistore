@@ -106,7 +106,7 @@
     "strip-json-comments-cli": "^1.0.1"
   },
   "peerDependencies": {
-    "preact": "*",
-    "react": "*"
+    "preact": "optional:*",
+    "react": "optional:*"
   }
 }
