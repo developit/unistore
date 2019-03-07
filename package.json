@@ -32,7 +32,7 @@
     },
     {
       "path": "dist/unistore.js",
-      "maxSize": "350b"
+      "maxSize": "400b"
     },
     {
       "path": "preact.js",
