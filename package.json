@@ -104,5 +104,13 @@
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "strip-json-comments-cli": "^1.0.1"
+  },
+  "peerDependenciesMeta": {
+    "preact": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
   }
 }
