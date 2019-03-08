@@ -28,7 +28,7 @@
   "bundlesize": [
     {
       "path": "full/preact.js",
-      "maxSize": "750b"
+      "maxSize": "765b"
     },
     {
       "path": "dist/unistore.js",
@@ -99,7 +99,7 @@
     "jest": "^23.6.0",
     "microbundle": "^0.11.0",
     "npm-run-all": "^4.1.2",
-    "preact": "^8.4.2",
+    "preact": "^10.0.0-alpha.1",
     "raf": "^3.4.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
