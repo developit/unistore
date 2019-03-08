@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component, toChildArray } from 'preact';
 import { assign, mapActions, select } from '../util';
 
 /**
@@ -60,4 +60,4 @@ export function connect(mapStateToProps, actions) {
 export function Provider(props) {
 	this.getChildContext = () => ({ store: props.store });
 }
-Provider.prototype.render = props => props.children[0];
+Provider.prototype.render = props => toChildArray(props.children)[0];
