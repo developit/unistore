@@ -243,7 +243,7 @@ describe('connect()', () => {
 		);
 
 		expect(mapStateToProps).toHaveBeenCalledTimes(1);
-		expect(mapStateToProps).toHaveBeenCalledWith({}, { children: expect.anything() });
+		expect(mapStateToProps).toHaveBeenCalledWith({ }, { a: 'b', children: expect.anything() });
 		// outer props were changed
 		expect(Child).toHaveBeenCalledWith(
 			{ mappings: 2, a: 'b', store, children: expect.anything() },
