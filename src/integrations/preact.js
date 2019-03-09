@@ -64,8 +64,4 @@ export function connect(mapStateToProps, actions) {
 export function Provider(props) {
 	this.getChildContext = () => ({ store: props.store });
 }
-// Provider.prototype.getChildContext = function () {
-// 	return { store: this.props.store };
-// };
 Provider.prototype.render = props => props.children && props.children[0] || props.children;
-// Provider.prototype.render = props => Array.isArray(props.children) ? props.children[0] : props.children;

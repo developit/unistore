@@ -240,7 +240,7 @@ describe('<Provider>', () => {
 		// await sleep(100);
 
 		expect(mapStateToProps).toHaveBeenCalledTimes(1);
-		expect(mapStateToProps).toHaveBeenCalledWith({}, {});
+		expect(mapStateToProps).toHaveBeenCalledWith({}, { a: 'b' });
 		// outer props were changed
 		expect(Child).toHaveBeenCalledWith(
 			{ mappings: 2, a: 'b', store },

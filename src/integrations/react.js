@@ -25,11 +25,11 @@ export function connect(mapStateToProps, actions) {
 	return Child => {
 		function Wrapper(props, context) {
 			Component.call(this, props, context);
-			let { store } = context;
+			const store = context.store;
 			let state = mapStateToProps(store ? store.getState() : {}, props);
-			let boundActions = actions ? mapActions(actions, store) : { store };
+			const boundActions = actions ? mapActions(actions, store) : { store };
 			let update = () => {
-				let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
+				let mapped = mapStateToProps(store ? store.getState() : {}, props);
 				for (let i in mapped) if (mapped[i]!==state[i]) {
 					state = mapped;
 					return this.forceUpdate();
@@ -39,7 +39,10 @@ export function connect(mapStateToProps, actions) {
 					return this.forceUpdate();
 				}
 			};
-			this.componentWillReceiveProps = update;
+			this.componentWillReceiveProps = p => {
+				props = p;
+				update();
+			};
 			this.componentDidMount = () => {
 				store.subscribe(update);
 			};
