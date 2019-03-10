@@ -4,7 +4,9 @@ import { Provider, connect } from '../../src/integrations/preact';
 
 const sleep = ms => new Promise( r => setTimeout(r, ms) );
 
-describe('integrations/preact', () => {
+const NO_CHILDREN = global.IS_PREACT_8 ? expect.anything() : undefined;
+
+describe(`integrations/preact${global.IS_PREACT_8 ? '-8' : ''}`, () => {
 	describe('<Provider>', () => {
 		afterEach(() => {
 			render(null, document.body);
@@ -35,9 +37,8 @@ describe('integrations/preact', () => {
 	});
 
 	describe('connect()', () => {
-		afterEach(async () => {
+		afterEach(() => {
 			render(null, document.body);
-			await sleep(1);
 		});
 
 		it('should pass mapped state as props', () => {
@@ -52,7 +53,7 @@ describe('integrations/preact', () => {
 				document.body
 			);
 			expect(Child).toHaveBeenCalledWith(
-				{ a: 'b', store },
+				{ a: 'b', store, children: NO_CHILDREN },
 				expect.anything()
 			);
 			expect(store.subscribe).toBeCalled();
@@ -70,7 +71,7 @@ describe('integrations/preact', () => {
 				document.body
 			);
 			expect(Child).toHaveBeenCalledWith(
-				{ a: 'b', b: 'c', store },
+				{ a: 'b', b: 'c', store, children: NO_CHILDREN },
 				expect.anything()
 			);
 			expect(store.subscribe).toBeCalled();
@@ -122,7 +123,7 @@ describe('integrations/preact', () => {
 
 			expect(store.subscribe).toBeCalledWith(expect.any(Function));
 			expect(Child).toHaveBeenCalledWith(
-				{ store },
+				{ store, children: NO_CHILDREN },
 				expect.anything()
 			);
 
@@ -131,7 +132,7 @@ describe('integrations/preact', () => {
 			store.setState({ a: 'b' });
 			await sleep(1);
 			expect(Child).toHaveBeenCalledWith(
-				{ a: 'b', store },
+				{ a: 'b', store, children: NO_CHILDREN },
 				expect.anything()
 			);
 
@@ -158,20 +159,18 @@ describe('integrations/preact', () => {
 			}));
 
 			const ConnectedChild = connect(mapStateToProps)(Child);
-			const ref = {};
 			render(
 				<Provider store={store}>
-					<ConnectedChild ref={ref} />
+					<ConnectedChild />
 				</Provider>,
 				document.body
 			);
-			let c = ref.current;
 
 			expect(mapStateToProps).toHaveBeenCalledTimes(1);
-			expect(mapStateToProps).toHaveBeenCalledWith({}, { });
+			expect(mapStateToProps).toHaveBeenCalledWith({}, { children: NO_CHILDREN });
 			// first render calls mapStateToProps
 			expect(Child).toHaveBeenCalledWith(
-				{ mappings: 1, store },
+				{ mappings: 1, store, children: NO_CHILDREN },
 				expect.anything()
 			);
 
@@ -186,10 +185,10 @@ describe('integrations/preact', () => {
 			);
 
 			expect(mapStateToProps).toHaveBeenCalledTimes(1);
-			expect(mapStateToProps).toHaveBeenCalledWith({ }, { a: 'b' });
+			expect(mapStateToProps).toHaveBeenCalledWith({ }, { a: 'b', children: NO_CHILDREN });
 			// outer props were changed
 			expect(Child).toHaveBeenCalledWith(
-				{ mappings: 2, a: 'b', store },
+				{ mappings: 2, a: 'b', store, children: NO_CHILDREN },
 				expect.anything()
 			);
 
@@ -204,11 +203,11 @@ describe('integrations/preact', () => {
 			);
 
 			expect(mapStateToProps).toHaveBeenCalledTimes(1);
-			expect(mapStateToProps).toHaveBeenCalledWith({ }, { a: 'b' });
+			expect(mapStateToProps).toHaveBeenCalledWith({ }, { a: 'b', children: NO_CHILDREN });
 
 			// re-rendered, but outer props were not changed
 			expect(Child).toHaveBeenCalledWith(
-				{ mappings: 3, a: 'b', store },
+				{ mappings: 3, a: 'b', store, children: NO_CHILDREN },
 				expect.anything()
 			);
 		});
