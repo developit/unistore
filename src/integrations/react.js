@@ -1,9 +1,9 @@
-import { createElement, Children, Component } from 'react';
+import { createContext, createElement, useContext, useState, useEffect } from 'react';
 import { assign, mapActions, select } from '../util';
 
-const CONTEXT_TYPES = {
-	store: () => {}
-};
+const StoreContext = createContext();
+
+export const Consumer = StoreContext.Consumer;
 
 /** Wire a component up to the store. Passes state as props, re-renders on change.
  *  @param {Function|Array|String} mapStateToProps  A function mapping of store state to prop values, or an array/CSV of properties to map.
@@ -22,37 +22,28 @@ export function connect(mapStateToProps, actions) {
 	if (typeof mapStateToProps!=='function') {
 		mapStateToProps = select(mapStateToProps || []);
 	}
-	return Child => {
-		function Wrapper(props, context) {
-			Component.call(this, props, context);
-			const store = context.store;
-			let state = mapStateToProps(store ? store.getState() : {}, props);
-			const boundActions = actions ? mapActions(actions, store) : { store };
-			let update = () => {
-				let mapped = mapStateToProps(store ? store.getState() : {}, props);
-				for (let i in mapped) if (mapped[i]!==state[i]) {
-					state = mapped;
-					return this.forceUpdate();
-				}
-				for (let i in state) if (!(i in mapped)) {
-					state = mapped;
-					return this.forceUpdate();
-				}
-			};
-			this.componentWillReceiveProps = p => {
-				props = p;
-				update();
-			};
-			this.componentDidMount = () => {
-				store.subscribe(update);
-			};
-			this.componentWillUnmount = () => {
-				store.unsubscribe(update);
-			};
-			this.render = () => createElement(Child, assign(assign(assign({}, boundActions), this.props), state));
+	return Child => function Wrapper(props) {
+		let store = useContext(StoreContext);
+
+		const [state, setState] = useState({});
+
+		function update() {
+			let mapped = mapStateToProps(store ? store.getState() : {}, props);
+			for (let i in mapped) if (mapped[i]!==state[i]) {
+				return setState(mapped);
+			}
+			for (let i in state) if (!(i in mapped)) {
+				return setState(mapped);
+			}
 		}
-		Wrapper.contextTypes = CONTEXT_TYPES;
-		return (Wrapper.prototype = Object.create(Component.prototype)).constructor = Wrapper;
+
+		useEffect(() =>  store.subscribe(update), []);
+
+		useEffect(() => update(), [props]);
+
+		const boundActions = actions ? mapActions(actions, store) : { store };
+
+		return createElement(Child, assign(assign(assign({}, boundActions), props), state));
 	};
 }
 
@@ -65,12 +56,6 @@ export function connect(mapStateToProps, actions) {
  *  @param {Object} props
  *  @param {Store} props.store		A {Store} instance to expose via context.
  */
-export class Provider extends Component {
-	getChildContext() {
-		return { store: this.props.store };
-	}
-	render() {
-		return Children.only(this.props.children);
-	}
+export function Provider({ store, children }) {
+	return createElement(StoreContext.Provider, { value: store }, children);
 }
-Provider.childContextTypes = CONTEXT_TYPES;

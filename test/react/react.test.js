@@ -1,10 +1,9 @@
 import 'raf/polyfill';
 import React, { Component } from 'react';
 import TestUtils from 'react-dom/test-utils';
-import PropTypes from 'prop-types';
 
 import createStore from '../../src';
-import { Provider, connect } from '../../src/integrations/react';
+import { Provider, connect, Consumer } from '../../src/integrations/react';
 
 import { mount, configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
@@ -13,34 +12,32 @@ configure({ adapter: new Adapter() });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 describe('integrations/react', () => {
-	const createChild = (storeKey = 'store') => {
+	const createChild = () => {
 		class Child extends Component {
 			render() {
 				return <div />;
 			}
 		}
 
-		Child.contextTypes = {
-			[storeKey]: PropTypes.object.isRequired
-		};
-
 		return Child;
 	};
 	const Child = createChild();
 
 	it('should provide props into context', () => {
-		const store = createStore(() => ({}));
+		const outerStore = createStore(() => ({}));
 
 		const spy = jest.spyOn(console, 'error');
-		const tree = TestUtils.renderIntoDocument(
-			<Provider store={store}>
-				<Child />
+		TestUtils.renderIntoDocument(
+			<Provider store={outerStore}>
+				<Consumer>
+					{store => {
+						expect(store).toBe(outerStore);
+						return (<div />);
+					}}
+				</Consumer>
 			</Provider>
 		);
 		expect(spy).not.toHaveBeenCalled();
-
-		const child = TestUtils.findRenderedComponentWithType(tree, Child);
-		expect(child.context.store).toBe(store);
 	});
 
 	it('should pass mapped state as props', () => {

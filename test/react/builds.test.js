@@ -22,10 +22,14 @@ describe('build: default', () => {
 		it('should export Provider', () => {
 			expect(react).toHaveProperty('Provider', expect.any(Function));
 		});
-		it('should no export anything else', () => {
+		it('should export Consumer', () => {
+			expect(react).toHaveProperty('Consumer');
+		});
+		it('should not export anything else', () => {
 			expect(react).toEqual({
 				connect: react.connect,
-				Provider: react.Provider
+				Provider: react.Provider,
+				Consumer: react.Consumer
 			});
 		});
 	});
