@@ -26,4 +26,4 @@ export interface ActionMap<K> {
 
 export type ActionCreator<K> = (store: Store<K>) => ActionMap<K>;
 
-export type StateMapper<T, K, I> = (state: K, props: T) => I;
+export type StateMapper<T, K, I> = (state: K, props: T) => Partial<I>;
