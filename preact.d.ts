@@ -10,7 +10,7 @@ declare module "unistore/preact" {
 	export function connect<T, S, K, I>(
 		mapStateToProps: string | Array<string> | StateMapper<T, K, I>,
 		actions?: ActionCreator<K> | object
-	): (Child: Preact.ComponentConstructor<T & I, S> | Preact.AnyComponent<T & I, S>) => Preact.ComponentConstructor<T, S>;
+	): <C>(Child: Preact.ComponentConstructor<T & I, S> | Preact.AnyComponent<T & I, S>) => C extends Preact.AnyComponent<T & I, S> ? C : never;
 
 
 	export interface ProviderProps<T> {
