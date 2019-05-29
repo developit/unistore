@@ -228,6 +228,17 @@ const actions = { someAction }
 const Foo = connect('foo,bar', actions)( ({ foo, bar, someAction }) => <div /> )
 ```
 
+It is possible to retrieve props in connect definitions by retrieving the second argument
+
+```javascript
+const Foo = connect(
+    (state, props) => ({
+        foo: props.foo
+    }),
+    ({someAction})
+)(FooBase)
+```
+
 Returns **Component** ConnectedComponent
 
 #### Provider
