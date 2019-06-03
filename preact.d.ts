@@ -18,6 +18,6 @@ declare module "unistore/preact" {
 	}
 
 	export class Provider<T> extends Preact.Component<ProviderProps<T>> {
-		render(props: ProviderProps<T>): JSX.Element;
+		render(props: ProviderProps<T>): Preact.JSX.Element;
 	}
 }
