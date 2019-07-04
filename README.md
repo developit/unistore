@@ -148,7 +148,6 @@ Creates a new store, which is a tiny evented state container.
 
 - `state` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Optional initial state (optional, default `{}`)
 - `mutations`  
-- `sync`  
 
 **Examples**
 

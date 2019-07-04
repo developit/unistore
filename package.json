@@ -28,11 +28,11 @@
   "bundlesize": [
     {
       "path": "full/preact.js",
-      "maxSize": "823b"
+      "maxSize": "817b"
     },
     {
       "path": "dist/unistore.js",
-      "maxSize": "423b"
+      "maxSize": "414b"
     },
     {
       "path": "preact.js",

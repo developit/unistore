@@ -11,11 +11,10 @@ import { assign } from './util';
  * store.setState({ a: 'b' });   // logs { a: 'b' }
  * store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
  */
-export default function createStore(state, mutations, sync) {
+export default function createStore(state, mutations) {
 	let listeners = [];
   state = state || {};
   mutations = mutations;
-  sync = sync || undefined;
 
 	function unsubscribe(listener) {
 		let out = [];
