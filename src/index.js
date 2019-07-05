@@ -13,8 +13,7 @@ import { assign } from './util';
  */
 export default function createStore(state, mutations) {
 	let listeners = [];
-  state = state || {};
-  mutations = mutations;
+	state = state || {};
 
 	function unsubscribe(listener) {
 		let out = [];
@@ -29,17 +28,17 @@ export default function createStore(state, mutations) {
 		listeners = out;
 	}
 
-  function setState(update, overwrite, action) {
+	function setState(update, overwrite, action) {
 		state = overwrite ? update : assign(assign({}, state), update);
-    let currentListeners = listeners;
-    for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, update, overwrite, action);
-  }
+		let currentListeners = listeners;
+		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, update, overwrite, action);
+	}
 
 
-  function mutate(act, overwrite) {
-    let key = Object.keys(act)[0];
-    setState(mutations[key](state, ...act[key]), overwrite, act);
-  }
+	function mutate(act, overwrite) {
+		let key = Object.keys(act)[0];
+		setState(mutations[key](state, ...act[key]), overwrite, act);
+	}
 
 	/**
 	 * An observable state container, returned from {@link createStore}
@@ -56,11 +55,11 @@ export default function createStore(state, mutations) {
 		 * @returns {Function} boundAction()
 		 */
 		action(action) {
-      function apply(act) {
-        if (mutations)
-          mutate(act)
-        else
-          setState(act, false);
+			function apply(act) {
+				if (mutations)
+					mutate(act);
+				else
+					setState(act, false);
 			}
 
 			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500
@@ -69,7 +68,7 @@ export default function createStore(state, mutations) {
 				for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
 				let ret = action.apply(this, args);
 				if (ret!=null) {
-					if (ret.then) return ret.then(apply)
+					if (ret.then) return ret.then(apply);
 					return apply(ret);
 				}
 			};
@@ -80,9 +79,9 @@ export default function createStore(state, mutations) {
 		 * @param {Object} update				An object with properties to be merged into state
 		 * @param {Boolean} [overwrite=false]	If `true`, update will replace state instead of being merged into it
 		 */
-    setState,
+		setState,
 
-    mutate,
+		mutate,
 
 		/**
 		 * Register a listener function to be called whenever state is changed. Returns an `unsubscribe()` function.
