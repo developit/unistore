@@ -31,11 +31,7 @@ export default function createStore(state, mutations=false) {
 	function setState(update, overwrite, action) {
 		state = overwrite ? update : assign(assign({}, state), update);
 		let currentListeners = listeners;
-		if (mutations)
-			for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, update, action);
-		else
-			for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, update);
-
+		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, action);
 	}
 
 	function mutate(action, overwrite) {
@@ -59,10 +55,7 @@ export default function createStore(state, mutations=false) {
 		 */
 		action(action) {
 			function apply(result) {
-				if (mutations)
-					mutate(result, false);
-				else
-					setState(result, false, action);
+				setState(result, false, action);
 			}
 
 			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500
