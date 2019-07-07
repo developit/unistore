@@ -47,7 +47,7 @@ describe('createStore()', () => {
 		expect(sub2).toBeCalledWith(store.getState(), action);
 	});
 
-	it('should invoke subscriptions passing additional action parameter when using mutations', () => {
+	it('should invoke subscriptions using mutations', () => {
 		let store = createStore({ foo: 0 }, {
 			setFoo: (state, {v}) => ({ foo: v }),
 		})
