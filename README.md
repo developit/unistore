@@ -147,15 +147,15 @@ Creates a new store, which is a tiny evented state container.
 **Parameters**
 
 - `state` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Optional initial state (optional, default `{}`)
-- `mutations`  
+- `mutations`   (optional, default `false`)
 
 **Examples**
 
 ```javascript
 let store = createStore();
 store.subscribe( state => console.log(state) );
-store.setState({ a: 'b' });   // logs { a: 'b' }
-store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
+store.setState({ a: 'b' });	// logs { a: 'b' }
+store.setState({ c: 'd' });	// logs { a: 'b', c: 'd' }
 ```
 
 Returns **[store](#store)** 

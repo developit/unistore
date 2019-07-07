@@ -37,15 +37,27 @@ describe('createStore()', () => {
 		expect(rval).toBeInstanceOf(Function);
 
 		store.setState({ a: 'b' });
-		expect(sub1).toBeCalledWith(store.getState(), { a: 'b' }, undefined, undefined);
+		expect(sub1).toBeCalledWith(store.getState(), { a: 'b' });
 
 		store.subscribe(sub2);
 		store.setState({ c: 'd' });
 
 		expect(sub1).toHaveBeenCalledTimes(2);
-		expect(sub1).toHaveBeenLastCalledWith(store.getState(), { c: 'd' }, undefined, undefined);
-		expect(sub2).toBeCalledWith(store.getState(), { c: 'd' }, undefined, undefined);
-	});
+		expect(sub1).toHaveBeenLastCalledWith(store.getState(), { c: 'd' });
+		expect(sub2).toBeCalledWith(store.getState(), { c: 'd' });
+    });
+
+    it('should invoke subscriptions passing additional action parameter when using mutations', () => {
+        let store = createStore({ foo: 0 }, {
+			setFoo: (state, {v}) => ({ foo: v }),
+		})
+
+        let sub = jest.fn();
+        let rval = store.subscribe(sub);
+
+        store.mutate({ setFoo: { v: 1 } });
+        expect(sub).toBeCalledWith(store.getState(), { foo: 1 }, { setFoo: { v: 1 } })
+     });
 
 	it('should unsubscribe', () => {
 		let store = createStore();
@@ -93,14 +105,14 @@ describe('createStore()', () => {
 		expect(sub1).not.toBeCalled();
 		expect(sub2).not.toBeCalled();
 		expect(sub3).not.toBeCalled();
-    });
+	 });
 
-    it('should allow mutations', () => {
-        let store = createStore({ foo: 0 }, {
-            setFoo: (state, {v}) => ({ foo: v }),
-        })
+	 it('should allow mutations', () => {
+		let store = createStore({ foo: 0 }, {
+			setFoo: (state, {v}) => ({ foo: v }),
+		})
 
-        store.mutate({ setFoo: { v: 1 } })
-        expect(store.getState()).toMatchObject({ foo: 1 })
-    });
+		store.mutate({ setFoo: { v: 1 } })
+		expect(store.getState()).toMatchObject({ foo: 1 })
+	 });
 });

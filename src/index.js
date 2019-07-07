@@ -8,10 +8,10 @@ import { assign } from './util';
  * @example
  * let store = createStore();
  * store.subscribe( state => console.log(state) );
- * store.setState({ a: 'b' });   // logs { a: 'b' }
- * store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
+ * store.setState({ a: 'b' });	// logs { a: 'b' }
+ * store.setState({ c: 'd' });	// logs { a: 'b', c: 'd' }
  */
-export default function createStore(state, mutations) {
+export default function createStore(state, mutations=false) {
 	let listeners = [];
 	state = state || {};
 
@@ -31,13 +31,16 @@ export default function createStore(state, mutations) {
 	function setState(update, overwrite, action) {
 		state = overwrite ? update : assign(assign({}, state), update);
 		let currentListeners = listeners;
-		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, update, overwrite, action);
+		if (mutations)
+			for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, update, action);
+		else
+			for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, update);
+
 	}
 
-
-	function mutate(act, overwrite) {
-		let key = Object.keys(act)[0];
-		setState(mutations[key](state, act[key]), overwrite, act);
+	function mutate(action, overwrite) {
+		const key = Object.keys(action)[0];
+		setState(mutations[key](state, action[key]), overwrite, action);
 	}
 
 	/**
@@ -55,11 +58,11 @@ export default function createStore(state, mutations) {
 		 * @returns {Function} boundAction()
 		 */
 		action(action) {
-			function apply(act) {
+			function apply(result) {
 				if (mutations)
-					mutate(act);
+					mutate(result, false);
 				else
-					setState(act, false);
+					setState(result, false, action);
 			}
 
 			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500
