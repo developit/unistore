@@ -37,7 +37,7 @@ export default function createStore(state, mutations) {
 
 	function mutate(act, overwrite) {
 		let key = Object.keys(act)[0];
-		setState(mutations[key](state, ...act[key]), overwrite, act);
+		setState(mutations[key](state, act[key]), overwrite, act);
 	}
 
 	/**

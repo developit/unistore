@@ -93,5 +93,14 @@ describe('createStore()', () => {
 		expect(sub1).not.toBeCalled();
 		expect(sub2).not.toBeCalled();
 		expect(sub3).not.toBeCalled();
-	});
+    });
+
+    it('should allow mutations', () => {
+        let store = createStore({ foo: 0 }, {
+            setFoo: (state, {v}) => ({ foo: v }),
+        })
+
+        store.mutate({ setFoo: { v: 1 } })
+        expect(store.getState()).toMatchObject({ foo: 1 })
+    });
 });
