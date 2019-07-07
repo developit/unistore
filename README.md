@@ -154,8 +154,8 @@ Creates a new store, which is a tiny evented state container.
 ```javascript
 let store = createStore();
 store.subscribe( state => console.log(state) );
-store.setState({ a: 'b' });	// logs { a: 'b' }
-store.setState({ c: 'd' });	// logs { a: 'b', c: 'd' }
+store.setState({ a: 'b' });   // logs { a: 'b' }
+store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
 ```
 
 Returns **[store](#store)** 

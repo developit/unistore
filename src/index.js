@@ -8,8 +8,8 @@ import { assign } from './util';
  * @example
  * let store = createStore();
  * store.subscribe( state => console.log(state) );
- * store.setState({ a: 'b' });	// logs { a: 'b' }
- * store.setState({ c: 'd' });	// logs { a: 'b', c: 'd' }
+ * store.setState({ a: 'b' });   // logs { a: 'b' }
+ * store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
  */
 export default function createStore(state, mutations=false) {
 	let listeners = [];
