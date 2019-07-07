@@ -55,7 +55,10 @@ export default function createStore(state, mutations=false) {
 		 */
 		action(action) {
 			function apply(result) {
-				setState(result, false, action);
+				if (!mutations)
+					setState(result, false, action);
+				else
+					mutate(result, false);
 			}
 
 			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500

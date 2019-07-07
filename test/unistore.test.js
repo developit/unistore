@@ -114,5 +114,5 @@ describe('createStore()', () => {
 
 		store.mutate({ setFoo: { v: 1 } })
 		expect(store.getState()).toMatchObject({ foo: 1 })
-	 });
+     });
 });
