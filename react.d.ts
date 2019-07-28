@@ -10,7 +10,7 @@ declare module "unistore/react" {
 	export function connect<T, S, K, I>(
 		mapStateToProps: string | Array<string> | StateMapper<T, K, I>,
 		actions?: ActionCreator<K> | object
-	): (Child: ((props: T & I) => React.ReactNode) | React.ComponentClass<T, S>) => React.ComponentClass<T, S>;
+	): (Child: ((props: T & I) => React.ReactNode) | React.ComponentClass<T & I, S>) => React.ComponentClass<T & I, S>;
 
 	export interface ProviderProps<T> {
 		store: Store<T>;
