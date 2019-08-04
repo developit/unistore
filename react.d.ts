@@ -5,11 +5,11 @@
 
 declare module "unistore/react" {
 	import * as React from "react";
-	import { ActionCreator, StateMapper, Store } from "unistore";
+	import { ActionCreator, StateMapper, Store, ActionMap } from "unistore";
 
 	export function connect<T, S, K, I>(
 		mapStateToProps: string | Array<string> | StateMapper<T, K, I>,
-		actions?: ActionCreator<K> | object
+		actions?: ActionCreator<K> | ActionMap<K>
 	): (Child: ((props: T & I) => React.ReactNode) | React.ComponentClass<T, S>) => React.ComponentClass<T, S>;
 
 	export interface ProviderProps<T> {

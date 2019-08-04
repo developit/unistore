@@ -5,11 +5,11 @@
 
 declare module "unistore/preact" {
 	import * as Preact from "preact";
-	import { ActionCreator, StateMapper, Store } from "unistore";
+	import { ActionCreator, StateMapper, Store, ActionMap } from "unistore";
 
 	export function connect<T, S, K, I>(
 		mapStateToProps: string | Array<string> | StateMapper<T, K, I>,
-		actions?: ActionCreator<K> | object
+		actions?: ActionCreator<K> | ActionMap<K>
 	): (Child: Preact.ComponentConstructor<T & I, S> | Preact.AnyComponent<T & I, S>) => Preact.ComponentConstructor<T, S>;
 
 
