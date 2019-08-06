@@ -50,7 +50,7 @@ export default function createStore(state) {
 		 */
 		action(action) {
 			function apply(result, args) {
-				if (args.length === 2)
+				if (args && args.length === 2)
 					setState(result, false, action, args[1]);
 				else
 					setState(result, false, action);
