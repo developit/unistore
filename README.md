@@ -82,8 +82,8 @@ let actions = {
   increment2: ({ count }) => ({ count: count+1 }),
 
   // Actions receive current state as first parameter and any other params next
-  // See the "Increment with 10"-button below
-  incrementWith: ({ count }, incrementAmount) => {
+  // See the "Increment by 10"-button below
+  incrementBy: ({ count }, incrementAmount) => {
     return { count: count+incrementAmount }
   },
 }
@@ -121,11 +121,11 @@ let actionFunctions = store => ({
 
 // Connecting a react/preact component to get current state and to bind actions
 const App1 = connect('count', actions)(
-  ({ count, increment, incrementWith }) => (
+  ({ count, increment, incrementBy }) => (
     <div>
       <p>Count: {count}</p>
       <button onClick={increment}>Increment</button>
-      <button onClick={() => incrementWith(10)}>Increment with 10</button>
+      <button onClick={() => incrementBy(10)}>Increment by 10</button>
     </div>
   )
 )
