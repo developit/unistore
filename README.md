@@ -160,7 +160,6 @@ export const getApp2 = () => (
     <App2 />
   </Provider>
 )
-
 ```
 
 ### Debug
