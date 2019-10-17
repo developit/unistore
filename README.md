@@ -69,53 +69,98 @@ You can find the library on `window.unistore`.
 import createStore from 'unistore'
 import { Provider, connect } from 'unistore/preact'
 
-let store = createStore({ count: 0 })
+let store = createStore({ count: 0, stuff: [] })
 
-// If actions is a function, it gets passed the store:
-let actions = store => ({
+let actions = {
   // Actions can just return a state update:
   increment(state) {
+    // The returned object will be merged into the current state
     return { count: state.count+1 }
   },
 
   // The above example as an Arrow Function:
   increment2: ({ count }) => ({ count: count+1 }),
 
-  //Actions receive current state as first parameter and any other params next
-  //check this function as <button onClick={incrementAndLog}>
-  incrementAndLog: ({ count }, event) => {
-    console.info(event)
-    return { count: count+1 }
+  // Actions receive current state as first parameter and any other params next
+  // See the "Increment by 10"-button below
+  incrementBy: ({ count }, incrementAmount) => {
+    return { count: count+incrementAmount }
   },
+}
 
+// If actions is a function, it gets passed the store:
+let actionFunctions = store => ({
   // Async actions can be pure async/promise functions:
   async getStuff(state) {
-    let res = await fetch('/foo.json')
+    const res = await fetch('/foo.json')
     return { stuff: await res.json() }
   },
 
   // ... or just actions that call store.setState() later:
-  incrementAsync(state) {
-    setTimeout( () => {
-      store.setState({ count: state.count+1 })
-    }, 100)
+  clearOutStuff(state) {
+    setTimeout(() => {
+      store.setState({ stuff: [] }) // clear 'stuff' after 1 second
+    }, 1000)
+  }
+
+  // Remember that the state passed to the action function could be stale after
+  // doing async work, so use getState() instead:
+  incrementAfterStuff(state) {
+    const res = await fetch('foo.json')
+    const resJson = await res.json()
+    // the variable 'state' above could now be old,
+    // better get a new one from the store
+    const upToDateState = store.getState()
+
+    return {
+      stuff: resJson,
+      count: upToDateState.count + resJson.length,
+    }
   }
 })
 
-const App = connect('count', actions)(
-  ({ count, increment }) => (
+// Connecting a react/preact component to get current state and to bind actions
+const App1 = connect('count', actions)(
+  ({ count, increment, incrementBy }) => (
     <div>
       <p>Count: {count}</p>
       <button onClick={increment}>Increment</button>
+      <button onClick={() => incrementBy(10)}>Increment by 10</button>
     </div>
   )
 )
 
-export default () => (
+// First argument to connect can also be a string, array or function while
+// second argument can be an object or a function. Here we pass an array and
+// a function.
+const App2 = connect(['count', 'stuff'], actionFunctions)(
+  ({ count, stuff, getStuff, clearOutStuff, incrementAfterStuff }) => (
+    <div>
+      <p>Count: {count}</p>
+      <p>Stuff:
+        <ul>{stuff.map(s => (
+         <li>{s.name}</li>
+        ))}</ul>
+      </p>
+      <button onClick={getStuff}>Get some stuff!</button>
+      <button onClick={clearOutStuff}>Remove all stuff!</button>
+      <button onClick={incrementAfterStuff}>Get and count stuff!</button>
+    </div>
+  )
+)
+
+export const getApp1 = () => (
   <Provider store={store}>
-    <App />
+    <App1 />
   </Provider>
 )
+
+export const getApp2 = () => (
+  <Provider store={store}>
+    <App2 />
+  </Provider>
+)
+
 ```
 
 ### Debug
