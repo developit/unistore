@@ -11,8 +11,8 @@ declare module 'unistore/react' {
 		mapStateToProps: string | Array<string> | StateMapper<T, K, I>,
 		actions?: ActionCreator<K> | object
 	): (
-		Child: ((props: T & I) => React.ReactNode) | React.ComponentClass<T & I, S>
-	) => React.ComponentClass<T | T & I, S>;
+		Child: ((props: T & I) => React.ReactNode) | React.ComponentClass<T & I, S> | React.FC<T & I, S>
+	) => React.ComponentClass<T | T & I, S> | React.FC<T | T & I, S>;
 
 	export interface ProviderProps<T> {
 		store: Store<T>;
