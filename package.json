@@ -1,6 +1,6 @@
 {
   "name": "unistore",
-  "version": "3.0.6",
+  "version": "3.4.1",
   "description": "Dead simple centralized state container (store) with preact and react bindings.",
   "source": "src/index.js",
   "module": "dist/unistore.es.js",
@@ -10,8 +10,8 @@
   "scripts": {
     "build": "npm-run-all --silent -p build:main build:integrations build:combined -s size docs",
     "build:main": "microbundle",
-    "build:integrations": "microbundle src/integrations/*.js -o x.js -f cjs",
-    "build:combined": "microbundle src/combined/*.js -o full/x.js",
+    "build:integrations": "microbundle src/integrations/*.js -o x.js -f cjs --external react,preact",
+    "build:combined": "microbundle src/combined/*.js -o full/x.js --external react,preact",
     "size": "strip-json-comments --no-whitespace dist/unistore.js | gzip-size && bundlesize",
     "docs": "documentation readme src/index.js src/integrations/preact.js -q --section API && npm run -s fixreadme",
     "fixreadme": "node -e 'var fs=require(\"fs\");fs.writeFileSync(\"README.md\", fs.readFileSync(\"README.md\", \"utf8\").replace(/^-   /gm, \"- \"))'",
@@ -28,7 +28,7 @@
   "bundlesize": [
     {
       "path": "full/preact.js",
-      "maxSize": "750b"
+      "maxSize": "760b"
     },
     {
       "path": "dist/unistore.js",
@@ -45,7 +45,7 @@
         "env",
         {
           "targets": {
-            "node": true
+            "node": "current"
           }
         }
       ]
@@ -59,6 +59,9 @@
       ]
     ]
   },
+  "jest": {
+    "testURL": "http://localhost"
+  },
   "files": [
     "src",
     "dist",
@@ -70,7 +73,8 @@
     "index.d.ts",
     "preact.d.ts",
     "react.d.ts",
-    "devtools.js"
+    "devtools.js",
+    "devtools.d.ts"
   ],
   "keywords": [
     "preact",
@@ -83,28 +87,32 @@
   "license": "MIT",
   "devDependencies": {
     "@types/react": "^16.4.6",
-    "babel-jest": "^21.2.0",
+    "babel-jest": "^24.3.1",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
-    "bundlesize": "^0.15.3",
+    "bundlesize": "^0.17.1",
     "documentation": "^4.0.0",
     "dtslint": "^0.3.0",
-    "enzyme": "^3.2.0",
-    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.10.0",
     "eslint": "^4.16.0",
     "eslint-config-developit": "^1.1.1",
     "gzip-size-cli": "^2.1.0",
-    "jest": "^22.1.4",
-    "microbundle": "^0.4.3",
+    "jest": "^24.3.1",
+    "microbundle": "^0.11.0",
     "npm-run-all": "^4.1.2",
-    "preact": "^8.2.7",
+    "preact": "^10.0.0",
     "raf": "^3.4.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
     "strip-json-comments-cli": "^1.0.1"
   },
-  "peerDependencies": {
-    "preact": "*",
-    "react": "*"
+  "peerDependenciesMeta": {
+    "preact": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
   }
 }

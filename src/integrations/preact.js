@@ -16,26 +16,30 @@ import { assign, mapActions, select } from '../util';
  * export class Foo { render({ foo, bar }) { } }
  */
 export function connect(mapStateToProps, actions) {
-	if (typeof mapStateToProps!=='function') {
-		mapStateToProps = select(mapStateToProps || []);
+	if (typeof mapStateToProps!='function') {
+		mapStateToProps = select(mapStateToProps || {});
 	}
 	return Child => {
-		function Wrapper(props, { store }) {
+		function Wrapper(props, context) {
+			const store = context.store;
 			let state = mapStateToProps(store ? store.getState() : {}, props);
-			let boundActions = actions ? mapActions(actions, store) : { store };
+			const boundActions = actions ? mapActions(actions, store) : { store };
 			let update = () => {
-				let mapped = mapStateToProps(store ? store.getState() : {}, this.props);
+				let mapped = mapStateToProps(store ? store.getState() : {}, props);
 				for (let i in mapped) if (mapped[i]!==state[i]) {
 					state = mapped;
-					return this.setState(null);
+					return this.setState({});
 				}
 				for (let i in state) if (!(i in mapped)) {
 					state = mapped;
-					return this.setState(null);
+					return this.setState({});
 				}
 			};
-			this.componentDidMount = () => {
+			this.componentWillReceiveProps = p => {
+				props = p;
 				update();
+			};
+			this.componentDidMount = () => {
 				store.subscribe(update);
 			};
 			this.componentWillUnmount = () => {
@@ -60,4 +64,4 @@ export function connect(mapStateToProps, actions) {
 export function Provider(props) {
 	this.getChildContext = () => ({ store: props.store });
 }
-Provider.prototype.render = props => props.children[0];
+Provider.prototype.render = props => props.children && props.children[0] || props.children;

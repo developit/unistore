@@ -12,83 +12,7 @@ configure({ adapter: new Adapter() });
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-describe('createStore()', () => {
-	it('should be instantiable', () => {
-		let store = createStore();
-		expect(store).toMatchObject({
-			setState: expect.any(Function),
-			getState: expect.any(Function),
-			subscribe: expect.any(Function),
-			unsubscribe: expect.any(Function)
-		});
-	});
-	it('should update state in-place', () => {
-		let store = createStore();
-		expect(store.getState()).toMatchObject({});
-		store.setState({ a: 'b' });
-		expect(store.getState()).toMatchObject({ a: 'b' });
-		store.setState({ c: 'd' });
-		expect(store.getState()).toMatchObject({ a: 'b', c: 'd' });
-		store.setState({ a: 'x' });
-		expect(store.getState()).toMatchObject({ a: 'x', c: 'd' });
-		store.setState({ c: null });
-		expect(store.getState()).toMatchObject({ a: 'x', c: null });
-		store.setState({ c: undefined });
-		expect(store.getState()).toMatchObject({ a: 'x', c: undefined });
-	});
-	it('should invoke subscriptions', () => {
-		let store = createStore();
-		let sub1 = jest.fn();
-		let sub2 = jest.fn();
-		let rval = store.subscribe(sub1);
-		expect(rval).toBeInstanceOf(Function);
-		store.setState({ a: 'b' });
-		expect(sub1).toHaveBeenCalledTimes(1);
-		expect(sub1).toHaveBeenCalledWith(store.getState(), undefined);
-		store.subscribe(sub2);
-		store.setState({ c: 'd' });
-		expect(sub1).toHaveBeenCalledTimes(2);
-		expect(sub1).toHaveBeenLastCalledWith(store.getState(), undefined);
-		expect(sub2).toBeCalledWith(store.getState(), undefined);
-	});
-	it('should unsubscribe', () => {
-		let store = createStore();
-		let sub1 = jest.fn();
-		let sub2 = jest.fn();
-		let sub3 = jest.fn();
-		store.subscribe(sub1);
-		store.subscribe(sub2);
-		let unsub3 = store.subscribe(sub3);
-		store.setState({ a: 'b' });
-		expect(sub1).toBeCalled();
-		expect(sub2).toBeCalled();
-		expect(sub3).toBeCalled();
-		sub1.mockReset();
-		sub2.mockReset();
-		sub3.mockReset();
-		store.unsubscribe(sub2);
-		store.setState({ c: 'd' });
-		expect(sub1).toBeCalled();
-		expect(sub2).not.toBeCalled();
-		expect(sub3).toBeCalled();
-		sub1.mockReset();
-		sub2.mockReset();
-		sub3.mockReset();
-		store.unsubscribe(sub1);
-		store.setState({ e: 'f' });
-		expect(sub1).not.toBeCalled();
-		expect(sub2).not.toBeCalled();
-		expect(sub3).toBeCalled();
-		sub3.mockReset();
-		unsub3();
-		store.setState({ g: 'h' });
-		expect(sub1).not.toBeCalled();
-		expect(sub2).not.toBeCalled();
-		expect(sub3).not.toBeCalled();
-	});
-});
-
-describe('<Provider>', () => {
+describe('integrations/react', () => {
 	const createChild = (storeKey = 'store') => {
 		class Child extends Component {
 			render() {
@@ -191,5 +115,73 @@ describe('<Provider>', () => {
 		expect(store.unsubscribe).not.toHaveBeenCalled();
 		mountedProvider.unmount();
 		expect(store.unsubscribe).toBeCalled();
+	});
+
+	it('should run mapStateToProps and update when outer props change', async () => {
+		let state = {};
+		const store = { subscribe: jest.fn(), getState: () => state };
+		const Child = jest.fn(() => null).mockName('<Child>');
+		let mappings = 0;
+
+		// Jest mock return values are broken :(
+		const mapStateToProps = jest.fn((state, props) => ({ mappings: ++mappings, ...props }));
+
+		let root;
+		class Outer extends Component {
+			constructor() {
+				super();
+				this.state = {};
+				root = this;
+				root.setProps = props => this.setState({ props });
+			}
+			render() {
+				root = this;
+				return (
+					<Provider store={store}>
+						<ConnectedChild {...(this.state.props || this.props)} />
+					</Provider>
+				);
+			}
+		}
+
+		const ConnectedChild = connect(mapStateToProps)(Child);
+		const mountedProvider = mount(<Outer />);
+
+		expect(mapStateToProps).toHaveBeenCalledTimes(1);
+		expect(mapStateToProps).toHaveBeenCalledWith({}, { });
+		// first render calls mapStateToProps
+		expect(Child).toHaveBeenCalledWith(
+			{ mappings: 1, store },
+			expect.anything()
+		);
+
+		mapStateToProps.mockClear();
+		Child.mockClear();
+
+		// root.setState({ a: 'b' });
+		mountedProvider.setProps({ a: 'b' });
+
+		// await sleep(100);
+
+		expect(mapStateToProps).toHaveBeenCalledTimes(1);
+		expect(mapStateToProps).toHaveBeenCalledWith({}, { a: 'b' });
+		// outer props were changed
+		expect(Child).toHaveBeenCalledWith(
+			{ mappings: 2, a: 'b', store },
+			expect.anything()
+		);
+
+		mapStateToProps.mockClear();
+		Child.mockClear();
+
+		mountedProvider.setProps({ });
+
+		await sleep(1);
+
+		// re-rendered, but outer props were not changed
+		expect(Child).toHaveBeenCalledWith(
+			{ mappings: 3, a: 'b', store },
+			expect.anything()
+		);
 	});
 });
