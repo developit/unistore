@@ -39,7 +39,7 @@ export function connect(mapStateToProps, actions) {
 					return this.forceUpdate();
 				}
 			};
-			this.UNSAFE_componentWillReceiveProps = p => {
+			this.getDerivedStateFromProps = p => {
 				props = p;
 				update();
 			};
