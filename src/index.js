@@ -59,8 +59,7 @@ export default function createStore(state) {
 				for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
 				let ret = action.apply(this, args);
 				if (ret!=null) {
-					if (ret.then) return ret.then(apply);
-					return apply(ret);
+					ret.then ? ret.then(apply) : apply(ret);
 				}
 			};
 		},
