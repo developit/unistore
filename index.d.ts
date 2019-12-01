@@ -3,7 +3,7 @@
 // K - Store state
 // I - Injected props to wrapped component
 
-export type Listener<K> = (state: K, action?: Action<K>) => void;
+export type Listener<K> = (state: K, action?: Action<K>, update?: Partial<K>) => void;
 export type Unsubscribe = () => void;
 export type ActionFn<K> = (state: K, store: Store<K>) => Promise<Partial<K>> | Partial<K> | void;
 export interface ActionObject<K> {
