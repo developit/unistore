@@ -1,9 +1,10 @@
 // Bind an object/factory of actions to the store and wrap them.
 export function mapActions(actions, store) {
-	if (typeof actions==='function') actions = actions(store);
 	let mapped = {};
 	for (let i in actions) {
-		mapped[i] = store.action(actions[i]);
+		mapped[i] = function () {
+			return store.action(actions[i].apply(actions, arguments));
+		};
 	}
 	return mapped;
 }
