@@ -18,11 +18,11 @@ module.exports = function unistoreDevTools(store) {
 			}
 		});
 		store.devtools.init(store.getState());
-		store.subscribe(function (state, action) {
+		store.subscribe(function (state, action, update) {
 			var actionName = action && (action.name || action.type) || 'setState';
 
 			if (!ignoreState) {
-				store.devtools.send(actionName, state);
+				store.devtools.send({ type: actionName, update: update }, state);
 			} else {
 				ignoreState = false;
 			}
