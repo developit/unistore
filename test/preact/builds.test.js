@@ -27,8 +27,8 @@ describe('build: default', () => {
 	describe('smoke test (preact)', () => {
 		it('should render', done => {
 			const { Provider, connect } = preact;
-			const actions = ({ getState, setState }) => ({
-				incrementTwice(state) {
+			const actions = {
+				incrementTwice: () => (state, { getState, setState }) => {
 					setState({ count: state.count + 1 });
 					return new Promise(r =>
 						setTimeout(() => {
@@ -36,7 +36,7 @@ describe('build: default', () => {
 						}, 20)
 					);
 				}
-			});
+			};
 			const App = connect('count', actions)(({ count, incrementTwice }) => (
 				<button onClick={incrementTwice}>count: {count}</button>
 			));
