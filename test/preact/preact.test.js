@@ -211,5 +211,49 @@ describe(`integrations/preact${global.IS_PREACT_8 ? '-8' : ''}`, () => {
 				expect.anything()
 			);
 		});
+
+		it('should ignore stale props (zombie children)', async () => {
+			const orgState = {obj: {foo: 1, bar: 2}, current: 'foo'}
+			const store = createStore(orgState);
+			const Child = ({num}) => <div>{num}</div>;
+			const mapStateToProps = jest.fn((state, {id}) => ({num: state.obj[id]}));
+			const ConnectedChild = connect(mapStateToProps)(Child);
+			const Parent = jest.fn(({current}) => <ConnectedChild id={current} />);
+			const ConnectedParent = connect('current')(Parent);
+
+			render(
+				<Provider store={store}>
+					<ConnectedParent />
+				</Provider>,
+				document.body
+			);
+
+			expect(mapStateToProps).toHaveBeenCalledTimes(1);
+			expect(mapStateToProps).toHaveBeenCalledWith(
+				orgState, {children: NO_CHILDREN, id: 'foo'});
+			expect(Parent).toHaveBeenCalledTimes(1);
+
+			mapStateToProps.mockClear();
+			Parent.mockClear();
+			store.setState({current: 'bar'});
+			await sleep(1);
+
+			// Should only call the child mapStateToProps once (thru parent render).
+			expect(mapStateToProps).toHaveBeenCalledTimes(1);
+			expect(mapStateToProps).toHaveBeenCalledWith(
+				{...orgState, current: 'bar'}, {children: NO_CHILDREN, id: 'bar'});
+			expect(Parent).toHaveBeenCalledTimes(1);
+
+			mapStateToProps.mockClear();
+			Parent.mockClear();
+			store.setState({obj: {foo: 1, bar: 3}});
+			await sleep(1);
+
+			// Should only call the child mapStateToProps once (ignoring parent render).
+			expect(mapStateToProps).toHaveBeenCalledTimes(1);
+			expect(mapStateToProps).toHaveBeenCalledWith(
+				{obj: {foo: 1, bar: 3}, current: 'bar'}, {children: NO_CHILDREN, id: 'bar'});
+			expect(Parent).not.toHaveBeenCalled();
+		});
 	});
 });

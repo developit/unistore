@@ -1,4 +1,5 @@
 import { assign } from './util';
+import createSubscriber from './subscriber';
 
 /**
  * Creates a new store, which is a tiny evented state container.
@@ -12,26 +13,12 @@ import { assign } from './util';
  * store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
  */
 export default function createStore(state) {
-	let listeners = [];
+	const { emit, subscribe, unsubscribe } = createSubscriber();
 	state = state || {};
-
-	function unsubscribe(listener) {
-		let out = [];
-		for (let i=0; i<listeners.length; i++) {
-			if (listeners[i]===listener) {
-				listener = null;
-			}
-			else {
-				out.push(listeners[i]);
-			}
-		}
-		listeners = out;
-	}
 
 	function setState(update, overwrite, action) {
 		state = overwrite ? update : assign(assign({}, state), update);
-		let currentListeners = listeners;
-		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, action);
+		emit(state, action);
 	}
 
 	/**
@@ -77,10 +64,7 @@ export default function createStore(state) {
 		 * @param {Function} listener	A function to call when state changes. Gets passed the new state.
 		 * @returns {Function} unsubscribe()
 		 */
-		subscribe(listener) {
-			listeners.push(listener);
-			return () => { unsubscribe(listener); };
-		},
+		subscribe,
 
 		/**
 		 * Remove a previously-registered listener function.
