@@ -26,6 +26,15 @@ export type AsyncActionCreator<K> = (...args: any[]) => AsyncActionFn<K> | Async
 export type SyncActionCreator<K> = (...args: any[]) => SyncActionFn<K> | SyncActionObject<K>;
 export type ActionCreator<K> = AsyncActionCreator<K> | SyncActionCreator<K>;
 
+export type ActionCreatorsObject<K> = {
+  [actionCreator: string]: ActionCreator<K>
+}
+
+export type MappedActionCreators<A> = {
+  [P in keyof A]: A[P] extends AsyncActionCreator<any> ? (...args: any[]) => Promise<void> : (...args: any[]) => void
+}
+
+
 export interface Store<K> {
 	action(action: Action<K>): Promise<void> | void;
 	setState<U extends keyof K>(update: Pick<K, U>, overwrite?: boolean, action?: Action<K>): void;
@@ -35,9 +44,5 @@ export interface Store<K> {
 }
 
 export default function createStore<K>(state?: K): Store<K>;
-
-export interface ActionMap<K> {
-	[actionName: string]: ActionCreator<K>;
-}
 
 export type StateMapper<T, K, I> = (state: K, props: T) => I;
