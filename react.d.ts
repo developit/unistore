@@ -9,7 +9,7 @@ declare module 'unistore/react' {
 	import { StateMapper, Store, ActionCreatorsObject, MappedActionCreators  } from 'unistore';
 
 	export function connect<T, S, K, I, A extends ActionCreatorsObject<K>>(
-		mapStateToProps: string | Array<string> | StateMapper<T, K, I>,
+		mapStateToProps: string | Array<string> | StateMapper<T, K, I> | null,
 		actions?: A,
 	): (
 		Child: ((props: T & I & MappedActionCreators<A>) => React.ReactNode) | React.ComponentClass<T & I & MappedActionCreators<A>, S> | React.FC<T & I & MappedActionCreators<A>>

@@ -8,7 +8,7 @@ declare module 'unistore/preact' {
 	import { StateMapper, Store, ActionCreatorsObject, MappedActionCreators  } from 'unistore';
 
 	export function connect<T, S, K, I, A extends ActionCreatorsObject<K>>(
-		mapStateToProps: string | Array<string> | StateMapper<T, K, I>,
+		mapStateToProps: string | Array<string> | StateMapper<T, K, I> | null,
 		actions?: A,
 	): (
 		Child: Preact.ComponentConstructor<T & I & MappedActionCreators<A>, S> | Preact.AnyComponent<T & I & MappedActionCreators<A>, S>
