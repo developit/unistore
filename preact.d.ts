@@ -14,11 +14,11 @@ declare module 'unistore/preact' {
 		Child: Preact.ComponentConstructor<T & I & MappedActionCreators<A>, S> | Preact.AnyComponent<T & I & MappedActionCreators<A>, S>
 	) => Preact.ComponentConstructor<T | T & I, S>;
 
-	export interface ProviderProps<T> {
-		store: Store<T>;
+	export interface ProviderProps<K> {
+		store: Store<K>;
 	}
 
-	export class Provider<T> extends Preact.Component<ProviderProps<T>> {
-		render(props: ProviderProps<T>): Preact.JSX.Element;
+	export class Provider<K> extends Preact.Component<ProviderProps<K>> {
+		render(props: ProviderProps<K>): Preact.JSX.Element;
 	}
 }

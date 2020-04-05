@@ -15,11 +15,11 @@ declare module 'unistore/react' {
 		Child: ((props: T & I & MappedActionCreators<A>) => React.ReactNode) | React.ComponentClass<T & I & MappedActionCreators<A>, S> | React.FC<T & I & MappedActionCreators<A>>
 	) => React.ComponentClass<T | T & I, S> | React.FC<T | T & I>;
 
-	export interface ProviderProps<T> {
-		store: Store<T>;
+	export interface ProviderProps<K> {
+		store: Store<K>;
 	}
 
-	export class Provider<T> extends React.Component<ProviderProps<T>, {}> {
+	export class Provider<K> extends React.Component<ProviderProps<K>, {}> {
 		render(): React.ReactNode;
 	}
 
