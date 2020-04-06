@@ -34,8 +34,8 @@ describe('build: default', () => {
 		it('should render', done => {
 			const { Provider, connect } = react;
 			const actions = {
-				incrementTwice: () => (state, { getState, setState }) => {
-					setState({ count: state.count + 1 });
+				incrementTwice: () => (getState, dispatch) => {
+          dispatch(() => ({ count: getState().count + 1 }))
 					return new Promise(r =>
 						setTimeout(() => {
 							r({ count: getState().count + 1 });
