@@ -3,46 +3,46 @@
 // K - Store state
 // I - Injected props to wrapped component
 
-export type Listener<K> = (state: K, action?: Action<K>, update?: Partial<K>) => void;
+export type Listener<K, E> = (state: K, action?: Action<K, E>, update?: Partial<K>) => void;
 export type Unsubscribe = () => void;
 
-export type AsyncActionFn<K> = (getState: () => K, action: (action: Action<K>) => Promise<void> | void) => Promise<Partial<K> | void>;
-export type SyncActionFn<K> = (getState: () => K, action: (action: Action<K>) => Promise<void> | void) => Partial<K> | void;
-export type ActionFn<K> = AsyncActionFn<K> | SyncActionFn<K>;
+export type AsyncActionFn<K, E> = (getState: () => K, action: (action: Action<K, E>) => Promise<void> | void, extraArg: E) => Promise<Partial<K> | void>;
+export type SyncActionFn<K, E> = (getState: () => K, action: (action: Action<K, E>, E) => Promise<void> | void, extraArg: E) => Partial<K> | void;
+export type ActionFn<K, E> = AsyncActionFn<K, E> | SyncActionFn<K, E>;
 
-export type AsyncActionObject<K> = {
+export type AsyncActionObject<K, E> = {
   type: string;
-  action: AsyncActionFn<K>;
+  action: AsyncActionFn<K, E>;
 }
-export type SyncActionObject<K> = {
+export type SyncActionObject<K, E> = {
   type: string;
-  action: SyncActionFn<K>;
+  action: SyncActionFn<K, E>;
 }
-export type ActionObject<K> = AsyncActionObject<K> | SyncActionObject<K>;
+export type ActionObject<K, E> = AsyncActionObject<K, E> | SyncActionObject<K, E>;
 
-export type Action<K> = ActionObject<K> | ActionFn<K>;
+export type Action<K, E> = ActionObject<K, E> | ActionFn<K, E>;
 
-export type AsyncActionCreator<K> = (...args: any[]) => AsyncActionFn<K> | AsyncActionObject<K>;
-export type SyncActionCreator<K> = (...args: any[]) => SyncActionFn<K> | SyncActionObject<K>;
-export type ActionCreator<K> = AsyncActionCreator<K> | SyncActionCreator<K>;
+export type AsyncActionCreator<K, E> = (...args: any[]) => AsyncActionFn<K, E> | AsyncActionObject<K, E>;
+export type SyncActionCreator<K, E> = (...args: any[]) => SyncActionFn<K, E> | SyncActionObject<K, E>;
+export type ActionCreator<K, E> = AsyncActionCreator<K, E> | SyncActionCreator<K, E>;
 
-export type ActionCreatorsObject<K> = {
-  [actionCreator: string]: ActionCreator<K>
+export type ActionCreatorsObject<K, E> = {
+  [actionCreator: string]: ActionCreator<K, E>
 }
 
 export type MappedActionCreators<A> = {
-  [P in keyof A]: A[P] extends AsyncActionCreator<any> ? (...args: any[]) => Promise<void> : (...args: any[]) => void
+  [P in keyof A]: A[P] extends AsyncActionCreator<any, any> ? (...args: any[]) => Promise<void> : (...args: any[]) => void
 }
 
 
-export interface Store<K> {
-	dispatch(action: Action<K>): Promise<void> | void;
-	setState<U extends keyof K>(update: Pick<K, U>, overwrite?: boolean, action?: Action<K>): void;
-	subscribe(f: Listener<K>): Unsubscribe;
-	unsubscribe(f: Listener<K>): void;
+export interface Store<K, E> {
+	dispatch(action: Action<K, E>): Promise<void> | void;
+	setState<U extends keyof K>(update: Pick<K, U>, overwrite?: boolean, action?: Action<K, E>): void;
+	subscribe(f: Listener<K, E>): Unsubscribe;
+	unsubscribe(f: Listener<K, E>): void;
 	getState(): K;
 }
 
-export default function createStore<K>(state?: K): Store<K>;
+export default function createStore<K, E>(state?: K, extraArg?: E): Store<K, E>;
 
 export type StateMapper<T, K, I> = (state: K, props: T) => I;

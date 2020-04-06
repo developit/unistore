@@ -11,7 +11,7 @@ import { assign } from './util';
  * store.setState({ a: 'b' });   // logs { a: 'b' }
  * store.setState({ c: 'd' });   // logs { a: 'b', c: 'd' }
  */
-export default function createStore(state) {
+export default function createStore(state, extraArg) {
 	let listeners = [];
 	state = state || {};
 
@@ -32,7 +32,7 @@ export default function createStore(state) {
 		function apply(result) {
 			setState(result, false, action);
 		}
-		let ret = (action.action || action)(getState, dispatch);
+		let ret = (action.action || action)(getState, dispatch, extraArg);
 		if (ret != null) {
 			if (ret.then) return ret.then(apply);
 			return apply(ret);
