@@ -48,11 +48,11 @@ export default function createStore(state) {
 		 * @param {Function} action	An action of the form `action(state, ...args) -> stateUpdate`
 		 * @returns {Function} boundAction()
 		 */
-		action(action) {
+		dispatch(action) {
 			function apply(result) {
 				setState(result, false, action);
 			}
-			let ret = (action.action || action)(this.getState, this.action);
+			let ret = (action.action || action)(this.getState, this.dispatch);
 			if (ret != null) {
 				if (ret.then) return ret.then(apply);
 				return apply(ret);

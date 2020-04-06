@@ -3,7 +3,7 @@ export function mapActions(actions, store) {
 	let mapped = {};
 	for (let i in actions) {
 		mapped[i] = function () {
-			return store.action(actions[i].apply(actions, arguments));
+			return store.dispatch(actions[i].apply(actions, arguments));
 		};
 	}
 	return mapped;

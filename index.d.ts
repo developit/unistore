@@ -36,7 +36,7 @@ export type MappedActionCreators<A> = {
 
 
 export interface Store<K> {
-	action(action: Action<K>): Promise<void> | void;
+	dispatch(action: Action<K>): Promise<void> | void;
 	setState<U extends keyof K>(update: Pick<K, U>, overwrite?: boolean, action?: Action<K>): void;
 	subscribe(f: Listener<K>): Unsubscribe;
 	unsubscribe(f: Listener<K>): void;
