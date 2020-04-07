@@ -19,7 +19,11 @@ module.exports = function unistoreDevTools(store) {
 		});
 		store.devtools.init(store.getState());
 		store.subscribe(function (state, action, update) {
-			var actionName = action ? action.type || action.name || 'Unnamed' : 'setState';
+			var actionName = action
+				? action.type ||
+				  action.name ||
+				  'N/A (' + (Object.keys(update).join(', ') || 'none') + ')'
+				: 'setState (' + (Object.keys(update).join(', ') || 'none') + ')';
 
 			if (!ignoreState) {
 				store.devtools.send({ type: actionName, update: update }, state);
