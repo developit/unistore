@@ -19,6 +19,7 @@ module.exports = function unistoreDevTools(store) {
 		});
 		store.devtools.init(store.getState());
 		store.subscribe(function (state, action, update) {
+			update = update || {};
 			var actionName = action
 				? action.type ||
 				  action.name ||
