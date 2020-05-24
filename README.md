@@ -105,7 +105,7 @@ let actionFunctions = store => ({
 
   // Remember that the state passed to the action function could be stale after
   // doing async work, so use getState() instead:
-  incrementAfterStuff(state) {
+  async incrementAfterStuff(state) {
     const res = await fetch('foo.json')
     const resJson = await res.json()
     // the variable 'state' above could now be old,
