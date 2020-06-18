@@ -15,7 +15,7 @@
     "size": "strip-json-comments --no-whitespace dist/unistore.js | gzip-size && bundlesize",
     "docs": "documentation readme src/index.js src/integrations/preact.js -q --section API && npm run -s fixreadme",
     "fixreadme": "node -e 'var fs=require(\"fs\");fs.writeFileSync(\"README.md\", fs.readFileSync(\"README.md\", \"utf8\").replace(/^-   /gm, \"- \"))'",
-    "test": "eslint src && npm run build && jest",
+    "test": "eslint src && npm run build && jest && dtslint",
     "prepare": "npm t",
     "release": "npm t && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
@@ -86,11 +86,13 @@
   "author": "Jason Miller <jason@developit.ca>",
   "license": "MIT",
   "devDependencies": {
+    "@types/react": "^16.4.6",
     "babel-jest": "^24.3.1",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "bundlesize": "^0.17.1",
     "documentation": "^4.0.0",
+    "dtslint": "^0.3.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.10.0",
     "eslint": "^4.16.0",
