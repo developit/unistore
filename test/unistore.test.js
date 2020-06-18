@@ -37,14 +37,14 @@ describe('createStore()', () => {
 		expect(rval).toBeInstanceOf(Function);
 
 		store.setState({ a: 'b' });
-		expect(sub1).toBeCalledWith(store.getState(), action);
+		expect(sub1).toBeCalledWith(store.getState(), action, { a: 'b' }, undefined);
 
 		store.subscribe(sub2);
 		store.setState({ c: 'd' });
 
 		expect(sub1).toHaveBeenCalledTimes(2);
-		expect(sub1).toHaveBeenLastCalledWith(store.getState(), action);
-		expect(sub2).toBeCalledWith(store.getState(), action);
+		expect(sub1).toHaveBeenLastCalledWith(store.getState(), action, { c: 'd' }, undefined);
+		expect(sub2).toBeCalledWith(store.getState(), action, { c: 'd' }, undefined);
 	});
 
 	it('should unsubscribe', () => {

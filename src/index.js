@@ -28,10 +28,10 @@ export default function createStore(state) {
 		listeners = out;
 	}
 
-	function setState(update, overwrite, action) {
+	function setState(update, overwrite, action, params) {
 		state = overwrite ? update : assign(assign({}, state), update);
 		let currentListeners = listeners;
-		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, action);
+		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, action, update, params);
 	}
 
 	/**
@@ -49,8 +49,11 @@ export default function createStore(state) {
 		 * @returns {Function} boundAction()
 		 */
 		action(action) {
-			function apply(result) {
-				setState(result, false, action);
+			function apply(result, args) {
+				if (args && args.length === 2)
+					setState(result, false, action, args[1]);
+				else
+					setState(result, false, action);
 			}
 
 			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500
@@ -59,8 +62,8 @@ export default function createStore(state) {
 				for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
 				let ret = action.apply(this, args);
 				if (ret!=null) {
-					if (ret.then) return ret.then(apply);
-					return apply(ret);
+					if (ret.then) return ret.then(apply, args);
+					return apply(ret, args);
 				}
 			};
 		},
