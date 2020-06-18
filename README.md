@@ -207,7 +207,7 @@ Returns **[store](#store)**
 
 An observable state container, returned from [createStore](#createstore)
 
-##### action
+##### dispatch
 
 Create a bound copy of the given action function.
 The bound returned function invokes action() and persists the result back to the store.

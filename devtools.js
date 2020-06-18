@@ -18,11 +18,16 @@ module.exports = function unistoreDevTools(store) {
 			}
 		});
 		store.devtools.init(store.getState());
-		store.subscribe(function (state, action) {
-			var actionName = action && action.name || 'setState';
+		store.subscribe(function (state, action, update) {
+			update = update || {};
+			var actionName = action
+				? action.type ||
+				  action.name ||
+				  'N/A (' + (Object.keys(update).join(', ') || 'none') + ')'
+				: 'setState (' + (Object.keys(update).join(', ') || 'none') + ')';
 
 			if (!ignoreState) {
-				store.devtools.send(actionName, state);
+				store.devtools.send({ type: actionName, update: update }, state);
 			} else {
 				ignoreState = false;
 			}

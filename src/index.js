@@ -28,10 +28,25 @@ export default function createStore(state) {
 		listeners = out;
 	}
 
+	function dispatch(action) {
+		function apply(result) {
+			setState(result, false, action);
+		}
+		let ret = (action.action || action)(getState, dispatch);
+		if (ret != null) {
+			if (ret.then) return ret.then(apply);
+			return apply(ret);
+		}
+	}
+
+	function getState() {
+		return state;
+	}
+
 	function setState(update, overwrite, action) {
 		state = overwrite ? update : assign(assign({}, state), update);
 		let currentListeners = listeners;
-		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, action);
+		for (let i=0; i<currentListeners.length; i++) currentListeners[i](state, action, update);
 	}
 
 	/**
@@ -48,22 +63,7 @@ export default function createStore(state) {
 		 * @param {Function} action	An action of the form `action(state, ...args) -> stateUpdate`
 		 * @returns {Function} boundAction()
 		 */
-		action(action) {
-			function apply(result) {
-				setState(result, false, action);
-			}
-
-			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500
-			return function() {
-				let args = [state];
-				for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
-				let ret = action.apply(this, args);
-				if (ret!=null) {
-					if (ret.then) return ret.then(apply);
-					return apply(ret);
-				}
-			};
-		},
+		dispatch,
 
 		/**
 		 * Apply a partial state object to the current state, invoking registered listeners.
@@ -93,8 +93,6 @@ export default function createStore(state) {
 		 * Retrieve the current state object.
 		 * @returns {Object} state
 		 */
-		getState() {
-			return state;
-		}
+		getState
 	};
 }
