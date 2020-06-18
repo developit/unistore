@@ -1,4 +1,5 @@
 import { createElement, Children, Component } from 'react';
+import createSubscriber from '../subscriber';
 import { assign, mapActions, select } from '../util';
 
 const CONTEXT_TYPES = {
@@ -26,6 +27,8 @@ export function connect(mapStateToProps, actions) {
 		function Wrapper(props, context) {
 			Component.call(this, props, context);
 			const store = context.store;
+			const { emit, subscribe, unsubscribe } = createSubscriber();
+			const subStore = { ...store, subscribe, unsubscribe };
 			let state = mapStateToProps(store ? store.getState() : {}, props);
 			const boundActions = actions ? mapActions(actions, store) : { store };
 			let update = () => {
@@ -38,6 +41,7 @@ export function connect(mapStateToProps, actions) {
 					state = mapped;
 					return this.forceUpdate();
 				}
+				emit();
 			};
 			this.UNSAFE_componentWillReceiveProps = p => {
 				props = p;
@@ -49,8 +53,10 @@ export function connect(mapStateToProps, actions) {
 			this.componentWillUnmount = () => {
 				store.unsubscribe(update);
 			};
+			this.getChildContext = () => ({ store: subStore });
 			this.render = () => createElement(Child, assign(assign(assign({}, boundActions), this.props), state));
 		}
+		Wrapper.childContextTypes = CONTEXT_TYPES;
 		Wrapper.contextTypes = CONTEXT_TYPES;
 		return (Wrapper.prototype = Object.create(Component.prototype)).constructor = Wrapper;
 	};

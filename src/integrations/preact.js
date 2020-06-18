@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import createSubscriber from '../subscriber';
 import { assign, mapActions, select } from '../util';
 
 /**
@@ -22,6 +23,8 @@ export function connect(mapStateToProps, actions) {
 	return Child => {
 		function Wrapper(props, context) {
 			const store = context.store;
+			const { emit, subscribe, unsubscribe } = createSubscriber();
+			const subStore = { ...store, subscribe, unsubscribe };
 			let state = mapStateToProps(store ? store.getState() : {}, props);
 			const boundActions = actions ? mapActions(actions, store) : { store };
 			let update = () => {
@@ -34,6 +37,7 @@ export function connect(mapStateToProps, actions) {
 					state = mapped;
 					return this.setState({});
 				}
+				emit();
 			};
 			this.componentWillReceiveProps = p => {
 				props = p;
@@ -45,6 +49,7 @@ export function connect(mapStateToProps, actions) {
 			this.componentWillUnmount = () => {
 				store.unsubscribe(update);
 			};
+			this.getChildContext = () => ({ store: subStore });
 			this.render = props => h(Child, assign(assign(assign({}, boundActions), props), state));
 		}
 		return (Wrapper.prototype = new Component()).constructor = Wrapper;
