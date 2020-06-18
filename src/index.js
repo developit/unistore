@@ -55,8 +55,10 @@ export default function createStore(state) {
 
 			// Note: perf tests verifying this implementation: https://esbench.com/bench/5a295e6299634800a0349500
 			return function() {
-				let args = [state];
-				for (let i=0; i<arguments.length; i++) args.push(arguments[i]);
+				let i = arguments.length,
+					args = Array(arguments.length + 1);
+				args[0] = state;
+				while (i) args[i--] = arguments[i];
 				let ret = action.apply(this, args);
 				if (ret!=null) {
 					if (ret.then) return ret.then(apply);
