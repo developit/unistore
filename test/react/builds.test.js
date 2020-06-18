@@ -33,16 +33,16 @@ describe('build: default', () => {
 	describe('smoke test (react)', () => {
 		it('should render', done => {
 			const { Provider, connect } = react;
-			const actions = ({ getState, setState }) => ({
-				incrementTwice(state) {
-					setState({ count: state.count + 1 });
+			const actions = {
+				incrementTwice: () => (getState, dispatch) => {
+          dispatch(() => ({ count: getState().count + 1 }))
 					return new Promise(r =>
 						setTimeout(() => {
 							r({ count: getState().count + 1 });
 						}, 20)
 					);
 				}
-			});
+			};
 			const App = connect('count', actions)(({ count, incrementTwice }) => (
 				<button id="some_button" onClick={incrementTwice}>
 					count: {count}

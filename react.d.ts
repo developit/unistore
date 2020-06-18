@@ -2,23 +2,24 @@
 // S - Wrapped component state
 // K - Store state
 // I - Injected props to wrapped component
+// A - actions
 
 declare module 'unistore/react' {
 	import * as React from 'react';
-	import { ActionCreator, StateMapper, Store } from 'unistore';
+	import { StateMapper, Store, ActionCreatorsObject, MappedActionCreators  } from 'unistore';
 
-	export function connect<T, S, K, I>(
-		mapStateToProps: string | Array<string> | StateMapper<T, K, I>,
-		actions?: ActionCreator<K> | object
+	export function connect<T, S, K, I, A extends ActionCreatorsObject<K, E>, E = any>(
+		mapStateToProps: string | Array<string> | StateMapper<T, K, I> | null,
+		actions?: A,
 	): (
-		Child: ((props: T & I) => React.ReactNode) | React.ComponentClass<T & I, S> | React.FC<T & I>
+		Child: ((props: T & I & MappedActionCreators<A>) => React.ReactNode) | React.ComponentClass<T & I & MappedActionCreators<A>, S> | React.FC<T & I & MappedActionCreators<A>>
 	) => React.ComponentClass<T | T & I, S> | React.FC<T | T & I>;
 
-	export interface ProviderProps<T> {
-		store: Store<T>;
+	export interface ProviderProps<K, E = any> {
+		store: Store<K, E>;
 	}
 
-	export class Provider<T> extends React.Component<ProviderProps<T>, {}> {
+	export class Provider<K> extends React.Component<ProviderProps<K>, {}> {
 		render(): React.ReactNode;
 	}
 

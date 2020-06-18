@@ -191,6 +191,7 @@ Creates a new store, which is a tiny evented state container.
 **Parameters**
 
 - `state` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Optional initial state (optional, default `{}`)
+- `extraArg`  
 
 **Examples**
 
@@ -207,7 +208,7 @@ Returns **[store](#store)**
 
 An observable state container, returned from [createStore](#createstore)
 
-##### action
+##### dispatch
 
 Create a bound copy of the given action function.
 The bound returned function invokes action() and persists the result back to the store.

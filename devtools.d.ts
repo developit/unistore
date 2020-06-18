@@ -1,3 +1,3 @@
 import { Store } from "unistore";
 
-export default function unistoreDevTools<K>(store: Store<K>): Store<K>;
+export default function unistoreDevTools<K, E>(store: Store<K, E>): Store<K, E>;
