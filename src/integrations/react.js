@@ -39,12 +39,10 @@ export function connect(mapStateToProps, actions) {
 					return this.forceUpdate();
 				}
 			};
+			store.subscribe(update);
 			this.UNSAFE_componentWillReceiveProps = p => {
 				props = p;
 				update();
-			};
-			this.componentDidMount = () => {
-				store.subscribe(update);
 			};
 			this.componentWillUnmount = () => {
 				store.unsubscribe(update);
