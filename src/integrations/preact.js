@@ -24,7 +24,7 @@ export function connect(mapStateToProps, actions) {
 			const store = context.store;
 			let state = mapStateToProps(store ? store.getState() : {}, props);
 			const boundActions = actions ? mapActions(actions, store) : { store };
-			let update = () => {
+			const update = () => {
 				let mapped = mapStateToProps(store ? store.getState() : {}, props);
 				for (let i in mapped) if (mapped[i]!==state[i]) {
 					state = mapped;
@@ -35,12 +35,10 @@ export function connect(mapStateToProps, actions) {
 					return this.setState({});
 				}
 			};
+			store.subscribe(update);
 			this.componentWillReceiveProps = p => {
 				props = p;
 				update();
-			};
-			this.componentDidMount = () => {
-				store.subscribe(update);
 			};
 			this.componentWillUnmount = () => {
 				store.unsubscribe(update);
