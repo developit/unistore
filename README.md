@@ -101,7 +101,7 @@ let actionFunctions = store => ({
     setTimeout(() => {
       store.setState({ stuff: [] }) // clear 'stuff' after 1 second
     }, 1000)
-  }
+  },
 
   // Remember that the state passed to the action function could be stale after
   // doing async work, so use getState() instead:
